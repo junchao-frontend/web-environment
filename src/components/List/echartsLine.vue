@@ -1,0 +1,215 @@
+<template>
+  <div class="line">
+    <div id="cols2">
+      VOCs趋势分析
+      <div class="title-line">
+        <div class="Line"></div>
+        <div class="ball"></div>
+      </div>
+    </div>
+    <div class="line" ref="line"></div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "",
+  components: {},
+  props: {},
+  data() {
+    return {};
+  },
+  computed: {},
+  watch: {},
+  created() {},
+  mounted() {
+    this.$nextTick(this.initDialogs());
+  },
+  methods: {
+    initDialogs() {
+      let myChart = this.$echarts.init(this.$refs.line, "chalk1"); //初始化实例
+      let option = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985",
+            },
+          },
+          textStyle: {
+            fontSize: 12
+          }
+        },
+        grid: {
+          top: "35%",
+          left: "3%",
+          right: "5%",
+          bottom: "5%",
+          containLabel: true,
+        },
+        legend: {
+          show: true,
+          left: "65%",
+          top: "10%",
+          data: ["有组织", "无组织"],
+          textStyle: {
+            color: '#fff'
+          },
+          itemWidth: 15,
+          itemHeight: 8,
+          itemStyle: {
+            color: '#fff',
+            borderColor: '#d5b00a'
+          },
+        },
+        xAxis: {
+          type: "category",
+          axisTick: { show: false },
+          boundaryGap: false,
+          data: ["08:01", "08:02", "08:03", "08:04", "08:05", "08:06"],
+          //设置轴线的属性
+          axisLine: {
+            lineStyle: {
+              color: "#a6bde9",
+            },
+          },
+          axisLabel: {
+            textStyle: {
+              color: "#a6bde9",
+              fontSize: 10,
+            },
+          },
+        },
+        yAxis: {
+          type: "value",
+          splitLine: {
+            show: false,
+          },
+          min: 0,
+          max: 300,
+          splitNumber : 3,
+          axisTick: { show: false },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#a6bde9"
+            },
+          },
+          axisLabel: {
+            textStyle: {
+              color: "#a6bde9",
+              fontSize: 10,
+            },
+          },
+        },
+        series: [
+          {
+            name: "无组织",
+            data: [100, 260, 170, 200, 100, 200],
+            type: "line",
+            // symbolSize: 7,
+            lineStyle: {
+              color: "#d5b00a",
+            },
+            itemStyle: {
+              color: "#d5b00a",
+              borderColor: "#a3c8d8",
+            },
+            smooth: false,
+            areaStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "rgba(255,188,13, 0.4)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(255,188,13, 0)",
+                  },
+                ],
+                global: false, // 缺省为 false
+              },
+            },
+          },
+          {
+            name: "有组织",
+            data: [210, 230, 240, 178, 160, 180],
+            type: "line",
+            // symbolSize: 7,
+            lineStyle: {
+              color: "#0bdb88",
+              type:'dashed'
+            },
+            itemStyle: {
+              color: "#0bdb88",
+              borderColor: "#a3c8d8",
+            },
+            smooth: false,
+          },
+        ],
+      };
+
+      myChart.setOption(option);
+      window.addEventListener("resize", function () {
+        myChart.resize();
+      });
+    },
+  },
+};
+</script>
+<style scoped>
+#cols2 {
+  top: 15px;
+  left: 20px;
+  height: 7%;
+  width: 100%;
+  color: white;
+  /* text-align: center; */
+  font-size: 14px;
+  color: white;
+  /* text-shadow: 0 0 8px rgb(0, 233, 249); */
+  position: absolute;
+  /* padding-top: 4%; */
+  /* position: relative; */
+  /* top: 6%; */
+}
+.title-line {
+  margin-left: -15px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.Line {
+  border-top: 2px solid #2c567a;
+  width: 110px;
+  height: 0;
+}
+
+.ball {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #06c8eb;
+}
+.line {
+  height: 100%;
+  width: 100%;
+  /* border: solid 1px rgba(255, 255, 255, 0);
+  border-top-color: rgba(255, 255, 255, 0.12); */
+}
+.line {
+  /* border-top-color: rgba(255, 255, 255, 0.12);
+  border: solid 1px rgba(255, 255, 255, 0); */
+  height: 100%;
+  width: 100%;
+  /* background-color: rgb(168, 99, 99); */
+}
+</style>
