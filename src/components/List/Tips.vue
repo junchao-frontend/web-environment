@@ -15,7 +15,7 @@
           <div style="color: #a6bde9;  font-size: 12px;margin-top:18px">
             监控探头
           </div>
-          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:13px">
+          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             5
           </div>
         </div>
@@ -30,7 +30,7 @@
           <div style="color: #a6bde9; font-size: 12px;margin-top:18px">
             VOCs
           </div>
-          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:13px">
+          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             2
           </div>
         </div>
@@ -45,7 +45,7 @@
           <div style="color: #a6bde9; font-size: 12px;margin-top:18px">
             CEMs
           </div>
-          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:13px">
+          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             3
           </div>
         </div>
@@ -60,7 +60,7 @@
           <div style="color: #a6bde9; font-size: 12px;margin-top:18px">
             工艺流程
           </div>
-          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:13px">
+          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             5
           </div>
         </div>
@@ -75,7 +75,7 @@
           <div style="color: #a6bde9;font-size: 12px;margin-top:18px">
             脱硫脱硝
           </div>
-          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:13px">
+          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             1
           </div>
         </div>
@@ -90,7 +90,7 @@
           <div style="color: #a6bde9;  font-size: 12px;margin-top:18px">
             除尘设施
           </div>
-          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:13px">
+          <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             5
           </div>
         </div>

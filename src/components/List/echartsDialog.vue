@@ -11,12 +11,26 @@ import echarts from "echarts";
 export default {
   name: "",
   components: {},
-  props: {},
+  props: ['dialogData'],
   data() {
-    return {};
+    return {
+      testData: this.dialogData
+    };
   },
   computed: {},
-  watch: {},
+  watch: {
+    dialogData: {
+    handler(a) {
+      console.log(a);
+      this.testData = a
+      // console.log(this.productionData.data, 'aaaa');
+      this.initDialogs()
+      // console.log(b, 'bbbbb');
+      // this.fullName = newName + ' ' + this.lastName;
+    },
+    immediate: true
+  }
+  },
   created() {},
   mounted() {
     this.$nextTick(this.initDialogs());
@@ -121,10 +135,7 @@ export default {
           {
             name: "人流量",
             type: "line",
-            data: [
-              2, 4, 5, 2, 3, 7, 8, 5, 5, 6, 8, 5, 5, 2, 7, 8, 9, 5, 5, 2, 1, 4,
-              8, 2,
-            ],
+            data: this.testData.data1,
             markPoint: {
               data: [
                 { type: "max", name: "最大值" },
@@ -138,10 +149,7 @@ export default {
           {
             name: "人数",
             type: "line",
-            data: [
-              10, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19,
-              15, 18, 20, 14, 14, 14, 13,
-            ],
+            data: this.testData.data2,
             markPoint: {
               data: [
                 { type: "max", name: "最大值" },

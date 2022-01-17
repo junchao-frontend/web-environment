@@ -18,7 +18,7 @@ export default {
   props: ['echartsData'],
   data() {
     return {
-      productionData: ''
+      productionData: this.echartsData
     };
   },
   mounted() {

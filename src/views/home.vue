@@ -153,8 +153,8 @@
     <div class="date">
       {{ nowdata }}
       <div class="title-line-right">
-        <div class="line-right"></div>
         <div class="ball-right"></div>
+        <div class="line-right"></div>
       </div>
     </div>
     <div class="left-title">
@@ -163,10 +163,41 @@
         >天
       </div>
       <div class="title-line-left">
-        <div class="ball-left"></div>
         <div class="line-left"></div>
+        <div class="ball-left"></div>
       </div>
     </div>
+    <el-dialog
+      @open="changeDialogItem('1')"
+      :title="infoTitle"
+      :visible.sync="dialogVisible"
+      width="50%"
+    >
+      <div class="dialog-label">
+        <div
+          @click="changeDialogItem('1')"
+          :class="clickItem1 ? 'dialog-label-selectItem' : ''"
+          class="dialog-label-item"
+        >
+          近24小时
+        </div>
+        <div
+          @click="changeDialogItem('2')"
+          :class="clickItem2 ? 'dialog-label-selectItem' : ''"
+          class="dialog-label-item"
+        >
+          近一周
+        </div>
+        <div
+          @click="changeDialogItem('3')"
+          :class="clickItem3 ? 'dialog-label-selectItem' : ''"
+          class="dialog-label-item"
+        >
+          近一个月
+        </div>
+      </div>
+      <EchartsDialog :dialogData="dialogData"></EchartsDialog>
+    </el-dialog>
   </div>
 </template>
 
@@ -180,7 +211,7 @@ import EchartsBar from "../components/List/echartsBar";
 import EchartsForm from "../components/List/echartsForm";
 import RightLine1 from "../components/List/rightLine1";
 import Tips from "../components/List/Tips";
-// import EchartsDialog from "../components/List/echartsDialog";
+import EchartsDialog from "../components/List/echartsDialog";
 import EchartsLine from "../components/List/echartsLine";
 import EchartsLines from "../components/List/echartsLines";
 import { MarkersPlugin } from "photo-sphere-viewer/dist/plugins/markers.js";
@@ -194,12 +225,28 @@ export default {
     Tips,
     EchartsLine,
     EchartsLines,
+    EchartsDialog,
   },
   data() {
     return {
       nowdata: null,
+      infoTitle: "",
       day: 20,
+      dialogVisible: false,
       img: require("./70.jpg"),
+      dialogData: {
+        data1: [
+          2, 4, 5, 2, 3, 7, 8, 5, 5, 6, 8, 5, 5, 2, 7, 8, 9, 5, 5, 2, 1, 4, 8,
+          2,
+        ],
+        data2: [
+          10, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
+          18, 20, 14, 14, 14, 13,
+        ],
+      },
+      clickItem1: false,
+      clickItem2: false,
+      clickItem3: false,
       isSelected1: false,
       isSelected2: false,
       isSelected3: false,
@@ -236,22 +283,26 @@ export default {
                   // polygon marker
                   id: "polygon",
                   polylineRad: [
-                    [0.1222819463354947, -0.3534596377307213],
-                    [0.28399908908591304, -0.3431417807696162],
-                    [0.2904262128810798, -0.07990835735187551],
-                    [0.13672227504219975, -0.08661369053066426],
-                    [0.009584019508339097, -0.22097920808181937],
-                    [0.1793218514147952, -0.2128871702152595]
+                    [0.00541087694273195, -0.21991346490253472],
+                    [0.13165434522719463, -0.08906181842984484],
+                    [0.28816546412137933, -0.07797139275465503],
+                    [0.28722938946089294, -0.34204699313592957],
+                    [0.30432561186429014, -0.46909460250166335],
+                    [0.13958333406474044, -0.4770714485501113],
+                    [0.12037066530252466, -0.3546645425090933],
+                    [0.1426599568666787, -0.3015457310119094],
+                    [0.014183985038274581, -0.3168138512299121],
+                    [0.00541087694273195, -0.21991346490253472],
                   ],
                   svgStyle: {
                     fill: "transparent",
                     stroke: "transparent",
                     strokeWidth: "2px",
                   },
-                  // tooltip: {
-                  //   content: "A dynamic polygon marker",
-                  //   position: "right bottom",
-                  // },
+                  tooltip: {
+                    content: "测试",
+                    position: "right",
+                  },
                 },
                 {
                   id: "html6",
@@ -269,7 +320,7 @@ export default {
                   width: 32,
                   height: 32,
                   anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
+                  tooltip: "无组织VOCs",
                 },
                 {
                   id: "html7",
@@ -287,7 +338,7 @@ export default {
                   width: 32,
                   height: 32,
                   anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
+                  tooltip: "有组织VOCs",
                 },
                 {
                   id: "html8",
@@ -309,7 +360,7 @@ export default {
                   width: 32,
                   height: 32,
                   anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
+                  tooltip: "CEMS",
                 },
               ],
             },
@@ -325,15 +376,22 @@ export default {
         console.log(e, "坐标");
       });
       const markersPlugin = PSV.getPlugin(MarkersPlugin);
-      markersPlugin.on("over-marker", (e,marker) => {
-        if (marker.id === 'polygon') {
+      markersPlugin.on("select-marker", (e, marker) => {
+        if (marker.type === "html") {
+          this.infoTitle = marker.config.tooltip.content;
+          this.dialogVisible = true; // 弹出框
+        }
+        console.log(marker);
+      });
+      markersPlugin.on("over-marker", (e, marker) => {
+        if (marker.id === "polygon") {
           markersPlugin.updateMarker({
-            id: 'polygon',
+            id: "polygon",
             svgStyle: {
-            fill: 'rgba(200, 0, 0, 0.2)',
-            stroke: 'rgba(200, 0, 50, 0.8)',
-            strokeWidth: '2px'
-          },
+              fill: "rgba(200, 0, 0, 0.2)",
+              stroke: "rgba(200, 0, 50, 0.8)",
+              strokeWidth: "2px",
+            },
           });
         }
         // markersPlugin.addMarker({
@@ -358,15 +416,15 @@ export default {
         //   // },
         // });
       });
-      markersPlugin.on("leave-marker", (e,marker) => {
-        if (marker.id === 'polygon') {
+      markersPlugin.on("leave-marker", (e, marker) => {
+        if (marker.id === "polygon") {
           markersPlugin.updateMarker({
-            id: 'polygon',
+            id: "polygon",
             svgStyle: {
-            fill: 'transparent',
-            stroke: 'transparent',
-            strokeWidth: '2px'
-          },
+              fill: "transparent",
+              stroke: "transparent",
+              strokeWidth: "2px",
+            },
           });
         }
       });
@@ -442,6 +500,51 @@ export default {
         (day - targetDay);
       this.nowdata = setTimeout(this.getTimes, 1000);
       this.nowdata = `${year}-${month}-${day}  ${hours}:${min}:${seconds}`;
+    },
+    changeDialogItem(a) {
+      if (a === "1") {
+        this.clickItem1 = true;
+        this.clickItem2 = false;
+        this.clickItem3 = false;
+        this.dialogData = {
+        data1: [
+          2, 4, 5, 2, 3, 7, 8, 5, 5, 6, 8, 5, 5, 2, 7, 8, 9, 5, 5, 2, 1, 4, 8,
+          2,
+        ],
+        data2: [
+          10, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
+          18, 20, 14, 14, 14, 13,
+        ],
+      }
+      } else if (a === "2") {
+        this.clickItem1 = false;
+        this.clickItem2 = true;
+        this.clickItem3 = false;
+        this.dialogData = {
+        data1: [
+          5, 6, 7, 4, 6, 2, 3, 3, 7, 5, 6, 4, 9, 3, 7, 8, 9, 5, 5, 2, 1, 4, 8,
+          2,
+        ],
+        data2: [
+          12, 14, 10, 8, 12, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
+          18, 20, 14, 14, 14, 13,
+        ],
+      }
+      } else if (a === "3") {
+        this.clickItem1 = false;
+        this.clickItem2 = false;
+        this.clickItem3 = true;
+        this.dialogData = {
+        data1: [
+          5, 6, 5, 2, 3, 7, 8, 5, 5, 6, 8, 9, 2, 10, 7, 8, 9, 5, 5, 2, 1, 4, 8,
+          2,
+        ],
+        data2: [
+          20, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
+          18, 20, 14, 14, 14, 13,
+        ],
+      }
+      }
     },
   },
 };
@@ -661,10 +764,10 @@ export default {
 */
 /deep/ .info-warp-wuzu {
   bottom: 62px;
-  left: -65px;
+  left: -50px;
   position: absolute;
-  width: 130px;
-  height: 80px;
+  width: 110px;
+  height: 70px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -678,6 +781,7 @@ export default {
     height: 30px;
     border-bottom: solid 1px #ccc;
     span {
+      font-size: 15px;
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
@@ -692,11 +796,11 @@ export default {
       margin-left: 4%;
       margin-right: 4%;
       color: #dbeaeb;
-      font-size: 14px;
+      font-size: 12px;
     }
     .right-span {
       color: #02eefc;
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 }
@@ -713,10 +817,10 @@ export default {
 */
 /deep/ .info-warp-youzu {
   bottom: 90px;
-  left: -65px;
+  left: -50px;
   position: absolute;
-  width: 130px;
-  height: 80px;
+  width: 110px;
+  height: 70px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -727,9 +831,10 @@ export default {
   box-sizing: border-box;
   background-color: rgba(64, 97, 148, 0.534);
   &-title {
-    height: 30px;
+    height: 25px;
     border-bottom: solid 1px #ccc;
     span {
+      font-size: 15px;
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
@@ -741,14 +846,14 @@ export default {
     text-align: right;
     margin-top: 8px;
     .left-span {
-      margin-left: 4%;
+      margin-left: 1%;
       margin-right: 4%;
       color: #dbeaeb;
-      font-size: 14px;
+      font-size: 12px;
     }
     .right-span {
       color: #02eefc;
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 }
@@ -764,10 +869,10 @@ CEMS css
 */
 /deep/ .info-warp-cems {
   bottom: 0px;
-  left: -90px;
+  left: -80px;
   position: absolute;
-  width: 185px;
-  height: 130px;
+  width: 160px;
+  height: 120px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -778,12 +883,13 @@ CEMS css
   box-sizing: border-box;
   background-color: rgba(64, 97, 148, 0.534);
   &-title {
-    height: 30px;
+    height: 25px;
     border-bottom: solid 1px #ccc;
     span {
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
+      font-size: 15px;
       // margin-top: 5%;
     }
   }
@@ -791,14 +897,14 @@ CEMS css
     margin-right: 36%;
     text-align: right;
     .left-span {
-      margin-left: 4%;
+      // margin-left: 4%;
       margin-right: 4%;
       color: #dbeaeb;
-      font-size: 14px;
+      font-size: 12px;
     }
     .right-span {
       color: #02eefc;
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 }
@@ -950,7 +1056,7 @@ CEMS css
   height: 6%;
   background-color: transparent;
   position: absolute;
-  top: 0;
+  top: 1%;
   margin-left: -400px;
   left: 50%;
 }
@@ -973,7 +1079,7 @@ CEMS css
 }
 .title-line-right {
   position: absolute;
-  right: 0px;
+  right: -2px;
   margin-left: -15px;
   margin-top: 5px;
   display: flex;
@@ -1053,6 +1159,58 @@ CEMS css
     bottom: -14px;
     right: -17px;
     background-color: #111339;
+  }
+}
+/deep/ .el-dialog {
+  // overflow: hidden;
+  position: relative;
+  margin: 0 auto 50px;
+  border-top-left-radius: 5%;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 5%;
+  border-bottom-left-radius: 0;
+  /* border-top: solid 3px #cccc;
+  border-bottom: solid 3px #cccc;
+  border-right: solid 3px #cccc;
+  border-left: solid 3px #cccc; */
+  backdrop-filter: blur(8px);
+  border: solid 2px rgba(64, 97, 148, 0.6);
+  // -webkit-box-shadow: 0 1px 3px rgba(0 0 0 / 30%);
+  // box-shadow: 0 1px 3px rgba(0 ,0 ,0 , 30%);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 35% !important;
+  height: 60% !important;
+  background-color: rgba(64, 97, 148, 0.534);
+  /* background-color: rgba(61, 77, 93, 0.5); */
+}
+/deep/ .el-dialog__body {
+  /* padding: 30px 20px; */
+  color: #606266;
+  font-size: 14px;
+  word-break: break-all;
+  height: 100%;
+  width: 97%;
+}
+/deep/ .el-dialog__title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #fff;
+}
+.dialog-label {
+  position: absolute;
+  display: flex;
+  right: 6%;
+  top: 20px;
+  &-item {
+    cursor: pointer;
+    color: white;
+    margin-right: 10px;
+    border-bottom: 1px solid rgb(219, 211, 211);
+  }
+  &-selectItem {
+    color: #fdcc01;
+    border-bottom: 1px solid #fdcc01;
   }
 }
 </style>
