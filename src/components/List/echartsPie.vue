@@ -26,7 +26,7 @@ export default {
       let chartData = [
         {
           name: "重大危险源数量",
-          num: 5000,
+          num: 4600,
           id: "total",
           key: "TOTAL",
         },
@@ -44,19 +44,13 @@ export default {
         },
         {
           name: "治理数据",
-          num: 600,
+          num: 1000,
           id: "three",
           key: "THREE",
-        },
-        {
-          name: "生产",
-          num: 400,
-          id: "four",
-          key: "FOUR",
-        },
+        }
       ];
       let total;
-      let colorArr = ["#FE7B7B", "#FFBD46", "#F5E139", "#0096FF"];
+      let colorArr = ["#FE7B7B", "#FFBD46", "#F5E139"];
       let seriesData = [];
       let nameArr = [];
       // eslint-disable-next-line no-unused-vars
@@ -65,8 +59,8 @@ export default {
         if (item.id === "total") {
           total = value;
         }
-        let colorIndex = ["one", "two", "three", "four"].indexOf(item.id);
-        if (["one", "two", "three", "four"].includes(item.id)) {
+        let colorIndex = ["one", "two", "three"].indexOf(item.id);
+        if (["one", "two", "three"].includes(item.id)) {
           nameArr.push(item.name);
           if (value) {
             seriesData.push({
@@ -118,7 +112,7 @@ export default {
           orient: "vertical",
           icon: "circle",
           left: "63%",
-          top: "25%",
+          top: "35%",
           // width: 10,
           itemGap: seriesData.length > 5 ? 15 : 20,
           itemWidth: 8,

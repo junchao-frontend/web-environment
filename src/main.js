@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from './store'
 import App from './App.vue'
 import router from './router/index'
 import './style/global.scss'
@@ -13,6 +14,7 @@ Vue.prototype.$echarts = echarts
 Vue.prototype.$http = axios
 Vue.use(dataV)
 new Vue({
+  store,
   router,
   render: h => h(App),
 }).$mount('#app')

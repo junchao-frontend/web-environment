@@ -1,7 +1,12 @@
 <template>
   <div class="main">
     <div id="cols2">
-      CEMS趋势分析
+      CEMS
+      <i
+          class="el-icon-full-screen"
+          style="font-size: 8px; cursor: pointer; color: white"
+          @click="openLinesInfo()"
+      />
       <div class="title-line">
         <div class="Line"></div>
         <div class="ball"></div>
@@ -56,7 +61,7 @@ import { getCemsData } from "@/api/line.js";
 export default {
   name: "",
   components: {},
-  props: {},
+  props: ['dialogVisible'],
   data() {
     return {
       linesData: "",
@@ -69,6 +74,7 @@ export default {
   created() {},
   mounted() {
     this.initData();
+    // console.log(this.dialogVisible);
   },
   methods: {
     initData() {
@@ -1519,6 +1525,9 @@ export default {
         myChart.resize();
       });
     },
+    openLinesInfo () {
+      this.$emit("openDialog", true)
+    }
   },
 };
 </script>
@@ -1546,7 +1555,7 @@ export default {
 }
 .Line {
   border-top: 2px solid #2c567a;
-  width: 110px;
+  width: 70px;
   height: 0;
 }
 .ball {
@@ -1767,5 +1776,9 @@ export default {
   height: 100%;
   width: 100%;
   /* background-color: rgb(168, 99, 99); */
+}
+.el-icon-full-screen{
+  position: relative;
+  z-index: 2000;
 }
 </style>

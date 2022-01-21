@@ -6,179 +6,201 @@
 </template>
 
 <script>
-import chalk1 from "../chalk/chalk1.json";
+// import chalk1 from "../chalk/chalk1.json";
 import echarts from "echarts";
 export default {
   name: "",
   components: {},
-  props: ['dialogData'],
+  props: ['cemsDataItem'],
   data() {
     return {
-      testData: this.dialogData
+      cemsData: this.cemsDataItem
     };
   },
   computed: {},
   watch: {
-    dialogData: {
+    cemsDataItem: {
     handler(a) {
       console.log(a);
-      this.testData = a
+      this.cemsData = a
       // console.log(this.productionData.data, 'aaaa');
       this.initDialogs()
       // console.log(b, 'bbbbb');
       // this.fullName = newName + ' ' + this.lastName;
     },
-    immediate: true
+    // immediate: true
   }
   },
-  created() {},
+  created() {
+    // this.testData = this.dialogData
+  },
   mounted() {
     this.$nextTick(this.initDialogs());
+    // console.log(this.cemsDataItem);
   },
   methods: {
     initDialogs() {
-      let obj = chalk1;
-      echarts.registerTheme("chalk1", obj);
-      let myChart = this.$echarts.init(this.$refs.chart, "chalk1"); //初始化实例
+      let myChart = this.$echarts.init(this.$refs.chart); //初始化实例
 
       let option = {
-        title: {
-          text: "人数24小时",
-          textStyle: {
-            color: "rgba(255,255,255,0.8)",
-            fontSize: 14,
-            textBorderWidth: 1,
-          },
-        },
+        // title: {
+        //     show: false,
+        //     text: '多线图',
+        //     textStyle: {
+        //         align: 'center',
+        //         color: '#fff',
+        //         fontSize: 20,
+        //     },
+        //     top: '5%',
+        //     left: 'center',
+        // },
         tooltip: {
           trigger: "axis",
-        },
-        legend: {
-          data: ["人流量", "人数"],
-          top: 6,
-        },
-        toolbox: {
-          show: false,
-          feature: {
-            dataZoom: {
-              yAxisIndex: "none",
-            },
-            dataView: { readOnly: false },
-            magicType: { type: ["line", "bar"] },
-            restore: {},
-            saveAsImage: {},
+          textStyle: {
+            fontSize: 12
           },
+          axisPointer: {
+            lineStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "rgba(0, 255, 233,0)",
+                  },
+                  {
+                    offset: 0.5,
+                    color: "rgba(255, 255, 255,1)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(0, 255, 233,0)",
+                  },
+                ],
+                global: false,
+              },
+            },
+          },
+        },
+        grid: {
+          top: "28%",
+          left: "4%",
+          right: "5%",
+          bottom: "-1%",
+          containLabel: true,
         },
         xAxis: {
           type: "category",
+          axisTick: { show: false },
           boundaryGap: false,
-          data: [
-            "0:00",
-            "1:00",
-            "2:00",
-            "3:00",
-            "4:00",
-            "5:00",
-            "6:00",
-            "7:00",
-            "8:00",
-            "9:00",
-            "10:00",
-            "11:00",
-            "12:00",
-            "13:00",
-            "14:00",
-            "15:00",
-            "16:00",
-            "17:00",
-            "18:00",
-            "19:00",
-            "20:00",
-            "21:00",
-            "22:00",
-            "23:00",
-          ],
+          data: this.cemsData.time,
+          axisLabel: {
+            interval: 3,
+            rotate: -30,
+            fontStyle: {
+              fontSize: 10
+            }
+          },
+          //设置轴线的属性
+          axisLine: {
+            lineStyle: {
+              color: "#a6bde9",
+            },
+          },
         },
         yAxis: {
+          inverse:  this.cemsData.data[0] > 0 ? false : true,
+          name: this.cemsData.unit,
+          nameLocation: this.cemsData.data[0] > 0 ? 'end' : 'start',
+          nameTextStyle: {
+            fontSize: 10,
+            color:"#a6bde9"
+          },
+          boundaryGap: false,
           type: "value",
           axisLabel: {
-            formatter: "{value} h",
+            textStyle: {
+              color: "#a6bde9",
+              fontSize: 10,
+            },
+          },
+          splitLine: {
+            show: false,
+            lineStyle: {
+              color: "#283352",
+              type: 'dashed'
+            },
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#a6bde9",
+            },
+          },
+          axisTick: {
+            show: false,
           },
         },
-        dataZoom: [
-          {
-            // 这个dataZoom组件，默认控制x轴。
-            show: true,
-            height: 30,
-            bottom: 0,
-
-            start: 10,
-            end: 80,
-            handleIcon:
-              "path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
-            handleSize: "110%",
-            handleStyle: {
-              color: "#5B3AAE",
-            },
-            textStyle: {
-              color: "rgba(204,187,225,0.5)",
-            },
-            fillerColor: "rgba(67,55,160,0.4)",
-            borderColor: "rgba(204,187,225,0.5)",
-          },
-          {
-            type: "inside",
-            show: true,
-          },
-        ],
         series: [
           {
-            name: "人流量",
+            // name: "昨日",
             type: "line",
-            data: this.testData.data1,
-            markPoint: {
-              data: [
-                { type: "max", name: "最大值" },
-                { type: "min", name: "最小值" },
-              ],
+            smooth: true, //是否平滑
+            showSymbol: false,
+            // symbol: 'image://./static/images/guang-circle.png',
+            symbol: "circle",
+            lineStyle: {
+              normal: {
+                width: 2,
+                color: "#19a3df",
+              },
             },
-            markLine: {
-              data: [{ type: "average", name: "平均值" }],
-            },
-          },
-          {
-            name: "人数",
-            type: "line",
-            data: this.testData.data2,
-            markPoint: {
-              data: [
-                { type: "max", name: "最大值" },
-                { type: "min", name: "最小值" },
-              ],
-            },
-            markLine: {
-              data: [
-                { type: "average", name: "平均值" },
-                [
-                  {
-                    symbol: "none",
-                    x: "90%",
-                    yAxis: "max",
-                  },
-                  {
-                    symbol: "circle",
-                    label: {
-                      normal: {
-                        position: "start",
-                        formatter: "最大值",
-                      },
+            areaStyle: {
+              normal: {
+                color: new echarts.graphic.LinearGradient(
+                  0,
+                  0,
+                  0,
+                  1,
+                  [
+                    {
+                      offset: 0,
+                      color: "rgba(79, 224, 171,.3)",
                     },
-                    type: "max",
-                    name: "最高点",
-                  },
-                ],
-              ],
+                    {
+                      offset: 0.8,
+                      color: "rgba(88,255,255,0)",
+                    },
+                  ],
+                  false
+                ),
+              },
             },
+            label: {
+              show: false,
+              position: "top",
+              textStyle: {
+                color: "#fff",
+                fontSize: 14,
+              },
+            },
+            itemStyle: {
+              color: "#00DAFF",
+              borderColor: "rgb(0,115,100)",
+              borderWidth: 0,
+              shadowColor: "rgba(0, 0, 0, 0)",
+              shadowBlur: 0,
+              shadowOffsetY: 0,
+              shadowOffsetX: 0,
+            },
+            tooltip: {
+              show: true,
+            },
+            data: this.cemsData.data,
           },
         ],
       };

@@ -26,7 +26,7 @@
       <div id="photosphere" class="photosphere"></div>
       <div class="middle-echarts">
         <dv-border-box-12 class="border">
-          <EchartsLines />
+          <EchartsLines :dialogVisible="dialogVisible"  @openDialog="openDialog"/>
         </dv-border-box-12>
       </div>
     </div>
@@ -143,11 +143,11 @@
       <!-- <span class="titletext">瑞通碳素环保管控平台</span> -->
       <dv-decoration-11 class="title-text"
         >瑞通炭素环保管控平台
-        <!-- <i
+        <i
           class="el-icon-full-screen"
           style="font-size: 16px; cursor: pointer; color: RGB(126, 136, 157)"
           @click="fullScreen()"
-      /> -->
+      />
       </dv-decoration-11>
     </div>
     <div class="date">
@@ -173,7 +173,7 @@
       :visible.sync="dialogVisible"
       width="50%"
     >
-      <div class="dialog-label">
+      <!-- <div class="dialog-label">
         <div
           @click="changeDialogItem('1')"
           :class="clickItem1 ? 'dialog-label-selectItem' : ''"
@@ -195,14 +195,21 @@
         >
           近一个月
         </div>
-      </div>
-      <EchartsDialog :dialogData="dialogData"></EchartsDialog>
+      </div> -->
+      <el-tabs v-model="firstInit" @tab-click="changeCemsLine" >
+        <template v-for="(item,index) in cemsNames">
+        <el-tab-pane :label="item" :name="item" :key="index"></el-tab-pane>
+        </template>
+      </el-tabs>
+      <EchartsDialog :cemsDataItem="cemsDataItem"></EchartsDialog>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import "photo-sphere-viewer/dist/plugins/markers.css";
+import { getCemsData } from '@/api/line.js'
 import { Viewer } from "photo-sphere-viewer";
 import "photo-sphere-viewer/dist/photo-sphere-viewer.css";
 import RightLine2 from "../components/List/rightLine2";
@@ -230,20 +237,14 @@ export default {
   data() {
     return {
       nowdata: null,
+      firstInit: '一氧化氮',
+      cemsDataArr: [], // cems数据集合
+      cemsDataItem: [], // cems单个折线数据
+      cemsNames: [],
       infoTitle: "",
       day: 20,
       dialogVisible: false,
       img: require("./70.jpg"),
-      dialogData: {
-        data1: [
-          2, 4, 5, 2, 3, 7, 8, 5, 5, 6, 8, 5, 5, 2, 7, 8, 9, 5, 5, 2, 1, 4, 8,
-          2,
-        ],
-        data2: [
-          10, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
-          18, 20, 14, 14, 14, 13,
-        ],
-      },
       clickItem1: false,
       clickItem2: false,
       clickItem3: false,
@@ -256,22 +257,29 @@ export default {
         name: "一次焙烧",
         data: [100, 260, 170, 200, 100, 200],
       },
+      PSV: null,
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(['dataName', 'realTimeData'])
+  },
   created() {},
   mounted() {
     this.init();
     this.getTimes();
     this.openItem("1");
+    this.initDialog()
+    setTimeout(()=> {
+      this.test()
+    },5000)
   },
   methods: {
     init() {
-      const PSV = new Viewer({
+      this.PSV = new Viewer({
         container: document.getElementById("photosphere"),
         panorama: this.img,
         defaultZoomLvl: 70,
-        navbar: ["autorotate", "zoom", "markers", "markersList"],
+        navbar: ["autorotate", "zoom", "fullscreen", "markers", "markersList"],
         defaultLong: 6.271302993071661, // 初始经度，介于0和2π之间
         defaultLat: -0.22862493322827957, // 初始纬度，介于-π/ 2和π/ 2之间。
         plugins: [
@@ -283,7 +291,7 @@ export default {
                   // polygon marker
                   id: "polygon",
                   polylineRad: [
-                    [0.00541087694273195, -0.21991346490253472],
+                    [0.0008044795605804655, -0.22478896099084955],
                     [0.13165434522719463, -0.08906181842984484],
                     [0.28816546412137933, -0.07797139275465503],
                     [0.28722938946089294, -0.34204699313592957],
@@ -292,7 +300,7 @@ export default {
                     [0.12037066530252466, -0.3546645425090933],
                     [0.1426599568666787, -0.3015457310119094],
                     [0.014183985038274581, -0.3168138512299121],
-                    [0.00541087694273195, -0.21991346490253472],
+                    [0.0008044795605804655, -0.22478896099084955],
                   ],
                   svgStyle: {
                     fill: "transparent",
@@ -340,20 +348,38 @@ export default {
                   anchor: "bottom center",
                   tooltip: "有组织VOCs",
                 },
+                // {
+                //   id: "html8",
+                //   longitude: 6.028658770109717,
+                //   latitude: -0.30994143771483906,
+                //   html: `<div class="info-warp-cems" onclick="test()">
+                //             <div class="info-warp-cems-title">
+                //             <span>超低排放监测(CEMS)</span>
+                //             </div>
+                //             <div class="info-warp-cems-body" id="test">
+                              
+                //             </div>
+                //         </div>
+                //         <div class='info-line-cems'></div>`,
+                //   width: 32,
+                //   height: 32,
+                //   anchor: "bottom center",
+                //   tooltip: "CEMS",
+                // },
                 {
                   id: "html8",
                   longitude: 6.028658770109717,
                   latitude: -0.30994143771483906,
-                  html: `<div class="info-warp-cems">
+                  html: `<div class="info-warp-cems" id="warp">
                             <div class="info-warp-cems-title">
-                            <span>超低排放监测(CEMS)</span>
+                            <span class="title-span">超低排放监测(CEMS)</span>
                             </div>
-                            <div class="info-warp-cems-body">
-                              <span class="left-span">颗粒物:</span><span class="right-span">25mg/m3</span>
-                              <span class="left-span">NOx:</span><span class="right-span">35mg/m3</span>
-                              <span class="left-span">SO2:</span><span class="right-span">45mg/m3</span>
-                              <span class="left-span">O3:</span><span class="right-span">45mg/m3</span>
-                              <span class="left-span">CO:</span><span class="right-span">44mg/m3</span>
+                            <div class="info-warp-cems-body" id="body">
+                              <span class="left-span">二氧化硫:</span><span class="right-span">0.021300</span>
+                              <span class="left-span">氧气含量:</span><span class="right-span">20.75469</span><br />
+                              <span class="left-span">烟尘:</span><span class="right-span">1.24756</span><br />
+                              <span class="left-span">烟气温度:</span><span class="right-span">1.39880</span>
+                              <span class="left-span">烟气压力:</span><span class="right-span">-0.02093</span>
                             </div>
                         </div>
                         <div class='info-line-cems'></div>`,
@@ -372,49 +398,28 @@ export default {
         // },
         // navbar: ["autorotate", "zoom", "download"],
       });
-      PSV.on("click", (e) => {
+      this.PSV.on("click", (e) => {
         console.log(e, "坐标");
       });
-      const markersPlugin = PSV.getPlugin(MarkersPlugin);
+      const markersPlugin = this.PSV.getPlugin(MarkersPlugin);
       markersPlugin.on("select-marker", (e, marker) => {
         if (marker.type === "html") {
           this.infoTitle = marker.config.tooltip.content;
           this.dialogVisible = true; // 弹出框
         }
-        console.log(marker);
+        // console.log(marker);
       });
       markersPlugin.on("over-marker", (e, marker) => {
         if (marker.id === "polygon") {
           markersPlugin.updateMarker({
             id: "polygon",
             svgStyle: {
-              fill: "rgba(200, 0, 0, 0.2)",
-              stroke: "rgba(200, 0, 50, 0.8)",
+              fill: "rgba(1, 239, 253, 0.2)",
+              stroke: "rgba(1, 239, 253, 0.8)",
               strokeWidth: "2px",
             },
           });
         }
-        // markersPlugin.addMarker({
-        //   // polygon marker
-        //   id: "polygon2",
-        //   polylineRad: [
-        //     [0.1222819463354947, -0.3534596377307213],
-        //     [0.28399908908591304, -0.3431417807696162],
-        //     [0.2904262128810798, -0.07990835735187551],
-        //     [0.13672227504219975, -0.08661369053066426],
-        //     [0.009584019508339097, -0.22097920808181937],
-        //     [0.1793218514147952, -0.2128871702152595],
-        //   ],
-        //   svgStyle: {
-        //     fill: 'rgba(200, 0, 0, 0.2)',
-        //     stroke: 'rgba(200, 0, 50, 0.8)',
-        //     strokeWidth: '2px'
-        //   },
-        //   // tooltip: {
-        //   //   content: "A dynamic polygon marker",
-        //   //   position: "right bottom",
-        //   // },
-        // });
       });
       markersPlugin.on("leave-marker", (e, marker) => {
         if (marker.id === "polygon") {
@@ -429,6 +434,41 @@ export default {
         }
       });
     },
+    // foo() {
+    //   const markersPlugin = this.PSV.getPlugin(MarkersPlugin);
+    //   markersPlugin.addMarker({
+    //     id: "html8",
+    //     longitude: 6.028658770109717,
+    //     latitude: -0.30994143771483906,
+    //     html: `<div class="info-warp-cems" onclick="test()">
+    //               <div class="info-warp-cems-title">
+    //               <span>超低排放监测(CEMS)</span>
+    //               </div>
+    //               <div class="info-warp-cems-body" id="test">
+    //                 <span class="left-span">颗粒物:</span><span class="right-span">25mg/m3</span>
+    //                 <span class="left-span">NOx:</span><span class="right-span">35mg/m3</span>
+    //                 <span class="left-span">SO2:</span><span class="right-span">45mg/m3</span>
+    //                 <span class="left-span">O3:</span><span class="right-span">45mg/m3</span>
+    //                 <span class="left-span">CO:</span><span class="right-span">44mg/m3</span>
+    //               </div>
+    //           </div>
+    //           <div class='info-line-cems'></div>`,
+    //     width: 32,
+    //     height: 32,
+    //     anchor: "bottom center",
+    //     tooltip: "CEMS",
+    //   });
+    //   // let s = document.getElementById('test')
+    //   // console.log(s);
+    //   // let span1 = document.createElement('SPAN')
+    //   // span1.className = 'left-span'
+    //   // span1.innerHTML = "颗粒物:"
+    //   // let span2 = document.createElement('SPAN')
+    //   // span2.className = 'right-span'
+    //   // span2.innerHTML = '25mg/m3'
+    //   // s.appendChild(span1)
+    //   // s.appendChild(span2)
+    // },
     openItem(a) {
       if (a === "1") {
         this.isSelected1 = true;
@@ -507,45 +547,236 @@ export default {
         this.clickItem2 = false;
         this.clickItem3 = false;
         this.dialogData = {
-        data1: [
-          2, 4, 5, 2, 3, 7, 8, 5, 5, 6, 8, 5, 5, 2, 7, 8, 9, 5, 5, 2, 1, 4, 8,
-          2,
-        ],
-        data2: [
-          10, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
-          18, 20, 14, 14, 14, 13,
-        ],
-      }
+          data1: [
+            2, 4, 5, 2, 3, 7, 8, 5, 5, 6, 8, 5, 5, 2, 7, 8, 9, 5, 5, 2, 1, 4, 8,
+            2,
+          ],
+          data2: [
+            10, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
+            18, 20, 14, 14, 14, 13,
+          ],
+        };
       } else if (a === "2") {
         this.clickItem1 = false;
         this.clickItem2 = true;
         this.clickItem3 = false;
         this.dialogData = {
-        data1: [
-          5, 6, 7, 4, 6, 2, 3, 3, 7, 5, 6, 4, 9, 3, 7, 8, 9, 5, 5, 2, 1, 4, 8,
-          2,
-        ],
-        data2: [
-          12, 14, 10, 8, 12, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
-          18, 20, 14, 14, 14, 13,
-        ],
-      }
+          data1: [
+            5, 6, 7, 4, 6, 2, 3, 3, 7, 5, 6, 4, 9, 3, 7, 8, 9, 5, 5, 2, 1, 4, 8,
+            2,
+          ],
+          data2: [
+            12, 14, 10, 8, 12, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19,
+            15, 18, 20, 14, 14, 14, 13,
+          ],
+        };
       } else if (a === "3") {
         this.clickItem1 = false;
         this.clickItem2 = false;
         this.clickItem3 = true;
         this.dialogData = {
-        data1: [
-          5, 6, 5, 2, 3, 7, 8, 5, 5, 6, 8, 9, 2, 10, 7, 8, 9, 5, 5, 2, 1, 4, 8,
-          2,
-        ],
-        data2: [
-          20, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
-          18, 20, 14, 14, 14, 13,
-        ],
-      }
+          data1: [
+            5, 6, 5, 2, 3, 7, 8, 5, 5, 6, 8, 9, 2, 10, 7, 8, 9, 5, 5, 2, 1, 4,
+            8, 2,
+          ],
+          data2: [
+            20, 13, 8, 12, 9, 10, 9, 15, 15, 12, 11, 13, 18, 12, 11, 18, 19, 15,
+            18, 20, 14, 14, 14, 13,
+          ],
+        };
       }
     },
+    openDialog(params) {
+      this.dialogVisible = params
+    },
+    fullScreen() {
+      var docElm = document.documentElement
+      // W3C
+      if (docElm.requestFullscreen) {
+        docElm.requestFullscreen()
+      }
+      // FireFox
+      else if (docElm.mozRequestFullScreen) {
+        docElm.mozRequestFullScreen()
+      }
+      // Chrome等
+      else if (docElm.webkitRequestFullScreen) {
+        docElm.webkitRequestFullScreen()
+      }
+      // IE11
+      // eslint-disable-next-line no-undef
+      else if (elem.msRequestFullscreen) {
+        // eslint-disable-next-line no-undef
+        elem.msRequestFullscreen()
+      }
+      // 退出全屏
+      // W3C
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      }
+      // FireFox
+      else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen()
+      }
+      // Chrome等
+      else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen()
+        // eslint-disable-next-line no-undef
+        data.name = '全屏'
+      }
+      // IE11
+      else if (document.msExitFullscreen) {
+        document.msExitFullscreen()
+      }
+    },
+    async initDialog () {
+      let params = {
+        code: 202201152021,
+      };
+      const {data} = await getCemsData(params)
+      const cemsData = data.data.info
+      this.cemsNames = Object.keys(cemsData)
+      this.cemsDataArr = Object.values(cemsData)
+      this.cemsDataItem = this.cemsDataArr[0]
+      // console.log(this.cemsDataArr);
+    },
+    changeCemsLine (tab) {
+      if(tab.index === '0') {
+        this.cemsDataItem = this.cemsDataArr[0]
+      } else if(tab.index === '1') {
+        this.cemsDataItem = this.cemsDataArr[1]
+      } else if(tab.index === '2') {
+        this.cemsDataItem = this.cemsDataArr[2]
+      } else if(tab.index === '3') {
+        this.cemsDataItem = this.cemsDataArr[3]
+      } else if(tab.index === '4') {
+        this.cemsDataItem = this.cemsDataArr[4]
+      } else if(tab.index === '5') {
+        this.cemsDataItem = this.cemsDataArr[5]
+      } else if(tab.index === '6') {
+        this.cemsDataItem = this.cemsDataArr[6]
+      } else if(tab.index === '7') {
+        this.cemsDataItem = this.cemsDataArr[7]
+      } else if(tab.index === '8') {
+        this.cemsDataItem = this.cemsDataArr[8]
+      } else if(tab.index === '9') {
+        this.cemsDataItem = this.cemsDataArr[9]
+      }
+    },
+    test () {
+      let warp = document.getElementById('warp')
+      let body = document.getElementById('body')
+      let span1 = document.createElement('SPAN')
+      span1.className = 'left-span'
+      span1.innerHTML= this.dataName[0] + ':'
+      let span2 = document.createElement('SPAN')
+      span2.className = 'right-span'
+      span2.innerHTML= this.realTimeData[0]
+      let span3 = document.createElement('SPAN')
+      span3.className = 'left-span'
+      span3.innerHTML= this.dataName[1] + ':'
+      let span4 = document.createElement('SPAN')
+      span4.className = 'right-span'
+      span4.innerHTML= this.realTimeData[1]
+      let br = document.createElement('BR')
+      let br1 = document.createElement('BR')
+      let span5 = document.createElement('SPAN')
+      span5.className = 'left-span'
+      span5.innerHTML= this.dataName[2] + ':'
+      let span6 = document.createElement('SPAN')
+      span6.className = 'right-span'
+      span6.innerHTML= this.realTimeData[2]
+      let span7 = document.createElement('SPAN')
+      span7.className = 'left-span'
+      span7.innerHTML= this.dataName[3] + ':'
+      let span8 = document.createElement('SPAN')
+      span8.className = 'right-span'
+      span8.innerHTML= this.realTimeData[3]
+      let span9 = document.createElement('SPAN')
+      span9.className = 'left-span'
+      span9.innerHTML= this.dataName[4] + ':'
+      let span10 = document.createElement('SPAN')
+      span10.className = 'right-span'
+      span10.innerHTML= this.realTimeData[4]
+      let newBody = document.createElement('DIV')
+      newBody.className = 'info-warp-cems-body'
+      newBody.id = 'newBody'
+      newBody.appendChild(span1)
+      newBody.appendChild(span2)
+      newBody.appendChild(span3)
+      newBody.appendChild(span4)
+      newBody.appendChild(br)
+      newBody.appendChild(span5)
+      newBody.appendChild(span6)
+      newBody.appendChild(br1)
+      newBody.appendChild(span7)
+      newBody.appendChild(span8)
+      newBody.appendChild(span9)
+      newBody.appendChild(span10)
+      warp.replaceChild(newBody,body)
+      setTimeout(()=>{
+        this.test1()
+      },5000)
+      // console.log(this.dataName);
+    },
+    test1 () {
+      let warp = document.getElementById('warp')
+      let body = document.getElementById('newBody')
+      let span1 = document.createElement('SPAN')
+      span1.className = 'left-span'
+      span1.innerHTML= this.dataName[5] + ':'
+      let span2 = document.createElement('SPAN')
+      span2.className = 'right-span'
+      span2.innerHTML= this.realTimeData[5]
+      let span3 = document.createElement('SPAN')
+      span3.className = 'left-span'
+      span3.innerHTML= this.dataName[6] + ':'
+      let span4 = document.createElement('SPAN')
+      span4.className = 'right-span'
+      span4.innerHTML= this.realTimeData[6]
+      let br = document.createElement('BR')
+      let br1 = document.createElement('BR')
+      let br2 = document.createElement('BR')
+      let span5 = document.createElement('SPAN')
+      span5.className = 'left-span'
+      span5.innerHTML= this.dataName[7] + ':'
+      let span6 = document.createElement('SPAN')
+      span6.className = 'right-span'
+      span6.innerHTML= this.realTimeData[7]
+      let span7 = document.createElement('SPAN')
+      span7.className = 'left-span'
+      span7.innerHTML= this.dataName[8] + ':'
+      let span8 = document.createElement('SPAN')
+      span8.className = 'right-span'
+      span8.innerHTML= this.realTimeData[8]
+      let span9 = document.createElement('SPAN')
+      span9.className = 'left-span'
+      span9.innerHTML= this.dataName[9] + ':'
+      let span10 = document.createElement('SPAN')
+      span10.className = 'right-span'
+      span10.innerHTML= this.realTimeData[9]
+      let newBody = document.createElement('DIV')
+      newBody.className = 'info-warp-cems-body'
+      newBody.id = 'body'
+      newBody.appendChild(span1)
+      newBody.appendChild(span2)
+      newBody.appendChild(br2)
+      newBody.appendChild(span3)
+      newBody.appendChild(span4)
+      newBody.appendChild(br)
+      newBody.appendChild(span5)
+      newBody.appendChild(span6)
+      newBody.appendChild(br1)
+      newBody.appendChild(span7)
+      newBody.appendChild(span8)
+      newBody.appendChild(span9)
+      newBody.appendChild(span10)
+      warp.replaceChild(newBody,body)
+      setTimeout(()=> {
+      this.test()
+    },5000)
+      // console.log(this.dataName);
+    }
   },
 };
 </script>
@@ -767,7 +998,7 @@ export default {
   left: -50px;
   position: absolute;
   width: 110px;
-  height: 70px;
+  height: 65px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -778,10 +1009,10 @@ export default {
   box-sizing: border-box;
   background-color: rgba(64, 97, 148, 0.534);
   &-title {
-    height: 30px;
+    height: 25px;
     border-bottom: solid 1px #ccc;
     span {
-      font-size: 15px;
+      font-size: 13px;
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
@@ -791,16 +1022,20 @@ export default {
   &-body {
     margin-right: 21%;
     text-align: right;
-    margin-top: 8px;
+    margin-top: 6px;
     .left-span {
       margin-left: 4%;
       margin-right: 4%;
       color: #dbeaeb;
       font-size: 12px;
+      display: inline-block;
+      -webkit-transform:scale(0.9);
     }
     .right-span {
       color: #02eefc;
       font-size: 12px;
+      display: inline-block;
+      -webkit-transform:scale(0.9);
     }
   }
 }
@@ -820,7 +1055,7 @@ export default {
   left: -50px;
   position: absolute;
   width: 110px;
-  height: 70px;
+  height: 65px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -834,7 +1069,7 @@ export default {
     height: 25px;
     border-bottom: solid 1px #ccc;
     span {
-      font-size: 15px;
+      font-size: 13px;
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
@@ -850,10 +1085,14 @@ export default {
       margin-right: 4%;
       color: #dbeaeb;
       font-size: 12px;
+      display: inline-block;
+      -webkit-transform:scale(0.9);
     }
     .right-span {
       color: #02eefc;
       font-size: 12px;
+      display: inline-block;
+      -webkit-transform:scale(0.9);
     }
   }
 }
@@ -869,9 +1108,9 @@ CEMS css
 */
 /deep/ .info-warp-cems {
   bottom: 0px;
-  left: -80px;
+  left: -75px;
   position: absolute;
-  width: 160px;
+  width: 150px;
   height: 120px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
@@ -885,26 +1124,30 @@ CEMS css
   &-title {
     height: 25px;
     border-bottom: solid 1px #ccc;
-    span {
+    .title-span {
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
-      font-size: 15px;
+      font-size: 13px;
       // margin-top: 5%;
     }
   }
   &-body {
-    margin-right: 36%;
+    margin-right: 30%;
     text-align: right;
     .left-span {
       // margin-left: 4%;
-      margin-right: 4%;
+      // margin-right: 3%;
       color: #dbeaeb;
       font-size: 12px;
+      display: inline-block;
+      -webkit-transform:scale(0.9);
     }
     .right-span {
       color: #02eefc;
       font-size: 12px;
+      display: inline-block;
+      -webkit-transform:scale(0.9);
     }
   }
 }
@@ -1180,12 +1423,12 @@ CEMS css
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   width: 35% !important;
-  height: 60% !important;
+  height: 45% !important;
   background-color: rgba(64, 97, 148, 0.534);
   /* background-color: rgba(61, 77, 93, 0.5); */
 }
 /deep/ .el-dialog__body {
-  /* padding: 30px 20px; */
+  padding: 10px 20px;
   color: #606266;
   font-size: 14px;
   word-break: break-all;
@@ -1193,7 +1436,7 @@ CEMS css
   width: 97%;
 }
 /deep/ .el-dialog__title {
-  line-height: 24px;
+  line-height: 15px;
   font-size: 18px;
   color: #fff;
 }
@@ -1212,5 +1455,27 @@ CEMS css
     color: #fdcc01;
     border-bottom: 1px solid #fdcc01;
   }
+}
+.el-tabs{
+  position: absolute;
+  top:13%;
+  /deep/ .el-tabs__item{
+    padding: 0 10px;
+    font-size: 12px;
+    color: #a6bde9;
+  }
+  /deep/ .el-tabs__item:hover{
+    color: #00efff;
+  }
+  /deep/ .el-tabs__item.is-active{
+    color: #00efff;
+  }
+  /deep/ .el-tabs__active-bar{
+    background-color: #00efff;
+  }
+}
+.el-icon-full-screen{
+  position: relative;
+  z-index: 2000;
 }
 </style>

@@ -21,8 +21,7 @@
 export default {
   data() {
     return {
-      config1: {
-      },
+      config1: {},
       websock: null,
     };
   },
@@ -55,20 +54,38 @@ export default {
     websocketonmessage(e) {
       //数据接收
       const redata = JSON.parse(e.data);
-      // console.log(redata);
-      let arrlistresult =[]
-      redata.map(item => {
-        let arrlis = [item.deviceName, item.dataName,item.realTimeData,item.hourData]
-        arrlistresult.push(arrlis)
-      })
+      // console.log(this.$store.state);
+
+      if (this.$store.state.test === 1) {
+        let dataName = [];
+        let realTimeData = [];
+        redata.forEach((item) => {
+          dataName.push(item.dataName);
+          realTimeData.push(item.realTimeData);
+        });
+        this.$store.commit("set_dataName", dataName);
+        this.$store.commit("set_realTimeData", realTimeData);
+      }
+
+      let arrlistresult = [];
+      redata.map((item) => {
+        let arrlis = [
+          item.deviceName,
+          item.dataName,
+          item.realTimeData,
+          item.hourData,
+        ];
+        arrlistresult.push(arrlis);
+      });
+      // console.log(arrlistresult);
       this.config1 = {
-        header: ["设备名称","指标/参数","实时数据","小时值"],
+        header: ["设备名称", "指标/参数", "实时数据", "小时值"],
         headerBGC: "#05365f",
         oddRowBGC: "transparent",
         evenRowBGC: "transparent",
         rowNum: 7,
         data: arrlistresult,
-      }
+      };
     },
     websocketsend(Data) {
       //数据发送
@@ -98,11 +115,11 @@ export default {
   text-align: center;
   white-space: nowrap;
 }
-/deep/ .rows{
-  .row-item{
+/deep/ .rows {
+  .row-item {
     text-align: center;
   }
-  .ceil{
+  .ceil {
     font-size: 12px;
     color: #a6bde9;
   }

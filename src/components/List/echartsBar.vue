@@ -18,11 +18,14 @@ export default {
   props: ['echartsData'],
   data() {
     return {
-      productionData: this.echartsData
+      productionData: ''
     };
   },
   mounted() {
     this.initBar();
+  },
+  created () {
+    this.productionData = this.echartsData
   },
   watch: {
     echartsData: {
@@ -32,8 +35,8 @@ export default {
       this.initBar()
       // console.log(b, 'bbbbb');
       // this.fullName = newName + ' ' + this.lastName;
-    },
-    immediate: true
+    }
+    // immediate: true
   }}
   ,
   methods: {
