@@ -67,6 +67,7 @@ export default {
       linesData: "",
       echartsData: "", // 真实数据数组
       echartsName: "",
+      echarts6Datamin: ''
     };
   },
   computed: {},
@@ -87,6 +88,7 @@ export default {
         this.echartsName = names;
         let dataArr = Object.values(this.linesData);
         this.echartsData = dataArr;
+        // console.log(Math.min(...echarts6Data), 'this.echartsData');
         this.$nextTick(this.initLine1());
         this.$nextTick(this.initLine2());
         this.$nextTick(this.initLine3());
@@ -165,6 +167,8 @@ export default {
         yAxis: {
           show: false,
           boundaryGap: false,
+          max: 'dataMax',
+          min: 'dataMin',
           type: "value",
           axisLabel: {
             textStyle: {
@@ -1004,6 +1008,7 @@ export default {
         },
         xAxis: {
           show: true,
+          position: 'bottom',
           axisLabel: {
             show: false
           },
@@ -1020,7 +1025,10 @@ export default {
         },
         yAxis: {
           show: false,
-          inverse: true,
+          // inverse: true,
+          max: 'dataMax',
+          min: 'dataMin',
+          // min: this.echarts6Datamin,
           boundaryGap: false,
           type: "value",
           axisLabel: {
@@ -1029,6 +1037,7 @@ export default {
               fontSize: 10,
             },
           },
+
           nameTextStyle: {
             color: "#fff",
             fontSize: 12,

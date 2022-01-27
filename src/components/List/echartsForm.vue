@@ -18,6 +18,7 @@
 
 <script>
 // import echarts from "echarts";
+// import Cookies from 'js-cookie'
 export default {
   data() {
     return {
@@ -36,16 +37,20 @@ export default {
     initWebSocket() {
       //初始化weosocket
       const wsuri = "ws://106.52.170.16:8090/getRealByWs";
+      //  const token = Cookies.get('token')
       this.websock = new WebSocket(wsuri);
+      // console.log(this.websock);
       this.websock.onmessage = this.websocketonmessage;
       this.websock.onopen = this.websocketonopen;
       this.websock.onerror = this.websocketonerror;
       this.websock.onclose = this.websocketclose;
+      // this.websocketonopen()
     },
     websocketonopen() {
       //连接建立之后执行send方法发送数据
-      let actions = { test: "12345" };
-      this.websocketsend(JSON.stringify(actions));
+      var token = '111'
+      this.websock.send(token)
+      // this.websocketsend(JSON.stringify(token));
     },
     websocketonerror() {
       //连接建立失败重连
@@ -53,12 +58,13 @@ export default {
     },
     websocketonmessage(e) {
       //数据接收
+      // console.log(e);
       const redata = JSON.parse(e.data);
       // console.log(this.$store.state);
-
       if (this.$store.state.test === 1) {
         let dataName = [];
         let realTimeData = [];
+        redata.splice(0,1)
         redata.forEach((item) => {
           dataName.push(item.dataName);
           realTimeData.push(item.realTimeData);
@@ -89,11 +95,12 @@ export default {
     },
     websocketsend(Data) {
       //数据发送
+      // console.log(Data);
       this.websock.send(Data);
     },
-    websocketclose(e) {
+    websocketclose() {
       //关闭
-      console.log("断开连接", e);
+      // console.log("断开连接", e);
     },
   },
 };

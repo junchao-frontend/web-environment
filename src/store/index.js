@@ -6,7 +6,8 @@ export default new Vuex.Store({
   state: {
     dataName: [],
     realTimeData: [],
-    test: 1
+    test: 1,
+    dialog: 1
   },
   mutations: {
     set_dataName (state, dataName) {
@@ -15,7 +16,10 @@ export default new Vuex.Store({
     },
     set_realTimeData (state, realTimeData) {
         state.realTimeData = realTimeData
-      }
+    },
+    set_dialog (state) {
+      state.dialog++
+    }
   },
   getters: {
   },

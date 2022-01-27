@@ -2,58 +2,7 @@
 <template>
   <div class="main">
     <div id="photosphere" class="photosphere">
-      <el-dialog title="测试" :visible.sync="dialogVisible" width="50%">
-        <EchartsDialog></EchartsDialog>
-      </el-dialog>
     </div>
-    <div class="left">
-      <div class="left1">
-        <EchartsRadar></EchartsRadar>
-      <div @click="large('radar')" class="large-icon"><svg t="1641888518288" fill="#02eefc" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5459" width="16" height="16"><path d="M852.68743 966.232318 171.311547 966.232318c-62.714867 0-113.562988-50.846038-113.562988-113.558335L57.748558 171.324994c0-62.712297 50.848122-113.558335 113.562988-113.558335l681.376907 0c62.714867 0 113.562988 50.846038 113.562988 113.558335l0 681.348989C966.250418 915.38628 915.40332 966.232318 852.68743 966.232318zM909.469948 171.324994c0-31.356149-25.424061-56.779168-56.781494-56.779168L171.311547 114.545826c-31.357433 0-56.781494 25.423019-56.781494 56.779168l0 681.348989c0 31.357172 25.424061 56.779168 56.781494 56.779168l681.376907 0c31.358457 0 56.781494-25.423019 56.781494-56.779168L909.469948 171.324994zM824.297706 483.610416c-15.665413 0-28.390747-12.697183-28.390747-28.389584l0.887243-186.638771L604.102866 461.264479l-40.145947-40.144302 193.023924-193.016015L568.782006 228.104161c-15.693044 0-28.390747-12.697183-28.390747-28.389584s12.697704-28.389584 28.390747-28.389584l254.711349 0c7.929925 0 15.082105 3.27151 20.238756 8.53949 5.490263 4.657067 8.955319 11.449773 8.955319 19.850094l0 255.506255C852.68743 470.913233 839.989727 483.610416 824.297706 483.610416zM455.219017 852.673983 200.506645 852.673983c-7.929925 0-15.082105-3.270487-20.239779-8.538467-5.489239-4.65809-8.955319-11.423167-8.955319-19.850094L171.311547 568.779168c0-15.692401 12.726357-28.389584 28.390747-28.389584 15.69202 0 28.390747 12.697183 28.390747 28.389584l-0.887243 186.6664 192.690312-192.710047 40.173577 40.143279-193.050531 193.016015 188.198837 0c15.69202 0 28.390747 12.697183 28.390747 28.389584C483.608741 839.9768 470.911038 852.673983 455.219017 852.673983z" p-id="5460"></path></svg></div>
-      </div>
-      <div class="left2">
-        <EchartsBar></EchartsBar>
-      <div @click="large('bar')" class="large-icon"><svg t="1641888518288" fill="#02eefc" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5459" width="16" height="16"><path d="M852.68743 966.232318 171.311547 966.232318c-62.714867 0-113.562988-50.846038-113.562988-113.558335L57.748558 171.324994c0-62.712297 50.848122-113.558335 113.562988-113.558335l681.376907 0c62.714867 0 113.562988 50.846038 113.562988 113.558335l0 681.348989C966.250418 915.38628 915.40332 966.232318 852.68743 966.232318zM909.469948 171.324994c0-31.356149-25.424061-56.779168-56.781494-56.779168L171.311547 114.545826c-31.357433 0-56.781494 25.423019-56.781494 56.779168l0 681.348989c0 31.357172 25.424061 56.779168 56.781494 56.779168l681.376907 0c31.358457 0 56.781494-25.423019 56.781494-56.779168L909.469948 171.324994zM824.297706 483.610416c-15.665413 0-28.390747-12.697183-28.390747-28.389584l0.887243-186.638771L604.102866 461.264479l-40.145947-40.144302 193.023924-193.016015L568.782006 228.104161c-15.693044 0-28.390747-12.697183-28.390747-28.389584s12.697704-28.389584 28.390747-28.389584l254.711349 0c7.929925 0 15.082105 3.27151 20.238756 8.53949 5.490263 4.657067 8.955319 11.449773 8.955319 19.850094l0 255.506255C852.68743 470.913233 839.989727 483.610416 824.297706 483.610416zM455.219017 852.673983 200.506645 852.673983c-7.929925 0-15.082105-3.270487-20.239779-8.538467-5.489239-4.65809-8.955319-11.423167-8.955319-19.850094L171.311547 568.779168c0-15.692401 12.726357-28.389584 28.390747-28.389584 15.69202 0 28.390747 12.697183 28.390747 28.389584l-0.887243 186.6664 192.690312-192.710047 40.173577 40.143279-193.050531 193.016015 188.198837 0c15.69202 0 28.390747 12.697183 28.390747 28.389584C483.608741 839.9768 470.911038 852.673983 455.219017 852.673983z" p-id="5460"></path></svg></div>
-      </div>
-      <div class="left3">
-        <EchartsForm></EchartsForm>
-      <div @click="large('form')" class="large-icon"><svg t="1641888518288" fill="#02eefc" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5459" width="16" height="16"><path d="M852.68743 966.232318 171.311547 966.232318c-62.714867 0-113.562988-50.846038-113.562988-113.558335L57.748558 171.324994c0-62.712297 50.848122-113.558335 113.562988-113.558335l681.376907 0c62.714867 0 113.562988 50.846038 113.562988 113.558335l0 681.348989C966.250418 915.38628 915.40332 966.232318 852.68743 966.232318zM909.469948 171.324994c0-31.356149-25.424061-56.779168-56.781494-56.779168L171.311547 114.545826c-31.357433 0-56.781494 25.423019-56.781494 56.779168l0 681.348989c0 31.357172 25.424061 56.779168 56.781494 56.779168l681.376907 0c31.358457 0 56.781494-25.423019 56.781494-56.779168L909.469948 171.324994zM824.297706 483.610416c-15.665413 0-28.390747-12.697183-28.390747-28.389584l0.887243-186.638771L604.102866 461.264479l-40.145947-40.144302 193.023924-193.016015L568.782006 228.104161c-15.693044 0-28.390747-12.697183-28.390747-28.389584s12.697704-28.389584 28.390747-28.389584l254.711349 0c7.929925 0 15.082105 3.27151 20.238756 8.53949 5.490263 4.657067 8.955319 11.449773 8.955319 19.850094l0 255.506255C852.68743 470.913233 839.989727 483.610416 824.297706 483.610416zM455.219017 852.673983 200.506645 852.673983c-7.929925 0-15.082105-3.270487-20.239779-8.538467-5.489239-4.65809-8.955319-11.423167-8.955319-19.850094L171.311547 568.779168c0-15.692401 12.726357-28.389584 28.390747-28.389584 15.69202 0 28.390747 12.697183 28.390747 28.389584l-0.887243 186.6664 192.690312-192.710047 40.173577 40.143279-193.050531 193.016015 188.198837 0c15.69202 0 28.390747 12.697183 28.390747 28.389584C483.608741 839.9768 470.911038 852.673983 455.219017 852.673983z" p-id="5460"></path></svg></div>
-      </div>
-    </div>
-    <div class="right">
-      <div class="right1">
-        <EchartsBLine></EchartsBLine>
-      <div @click="large('line')" class="large-icon-right"><svg t="1641888518288" fill="#02eefc" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5459" width="16" height="16"><path d="M852.68743 966.232318 171.311547 966.232318c-62.714867 0-113.562988-50.846038-113.562988-113.558335L57.748558 171.324994c0-62.712297 50.848122-113.558335 113.562988-113.558335l681.376907 0c62.714867 0 113.562988 50.846038 113.562988 113.558335l0 681.348989C966.250418 915.38628 915.40332 966.232318 852.68743 966.232318zM909.469948 171.324994c0-31.356149-25.424061-56.779168-56.781494-56.779168L171.311547 114.545826c-31.357433 0-56.781494 25.423019-56.781494 56.779168l0 681.348989c0 31.357172 25.424061 56.779168 56.781494 56.779168l681.376907 0c31.358457 0 56.781494-25.423019 56.781494-56.779168L909.469948 171.324994zM824.297706 483.610416c-15.665413 0-28.390747-12.697183-28.390747-28.389584l0.887243-186.638771L604.102866 461.264479l-40.145947-40.144302 193.023924-193.016015L568.782006 228.104161c-15.693044 0-28.390747-12.697183-28.390747-28.389584s12.697704-28.389584 28.390747-28.389584l254.711349 0c7.929925 0 15.082105 3.27151 20.238756 8.53949 5.490263 4.657067 8.955319 11.449773 8.955319 19.850094l0 255.506255C852.68743 470.913233 839.989727 483.610416 824.297706 483.610416zM455.219017 852.673983 200.506645 852.673983c-7.929925 0-15.082105-3.270487-20.239779-8.538467-5.489239-4.65809-8.955319-11.423167-8.955319-19.850094L171.311547 568.779168c0-15.692401 12.726357-28.389584 28.390747-28.389584 15.69202 0 28.390747 12.697183 28.390747 28.389584l-0.887243 186.6664 192.690312-192.710047 40.173577 40.143279-193.050531 193.016015 188.198837 0c15.69202 0 28.390747 12.697183 28.390747 28.389584C483.608741 839.9768 470.911038 852.673983 455.219017 852.673983z" p-id="5460"></path></svg></div>
-      </div>
-      <div class="right2">
-        <!-- <Graph></Graph> -->
-      <div @click="large('graph')" class="large-icon-right"><svg t="1641888518288" fill="#02eefc" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5459" width="16" height="16"><path d="M852.68743 966.232318 171.311547 966.232318c-62.714867 0-113.562988-50.846038-113.562988-113.558335L57.748558 171.324994c0-62.712297 50.848122-113.558335 113.562988-113.558335l681.376907 0c62.714867 0 113.562988 50.846038 113.562988 113.558335l0 681.348989C966.250418 915.38628 915.40332 966.232318 852.68743 966.232318zM909.469948 171.324994c0-31.356149-25.424061-56.779168-56.781494-56.779168L171.311547 114.545826c-31.357433 0-56.781494 25.423019-56.781494 56.779168l0 681.348989c0 31.357172 25.424061 56.779168 56.781494 56.779168l681.376907 0c31.358457 0 56.781494-25.423019 56.781494-56.779168L909.469948 171.324994zM824.297706 483.610416c-15.665413 0-28.390747-12.697183-28.390747-28.389584l0.887243-186.638771L604.102866 461.264479l-40.145947-40.144302 193.023924-193.016015L568.782006 228.104161c-15.693044 0-28.390747-12.697183-28.390747-28.389584s12.697704-28.389584 28.390747-28.389584l254.711349 0c7.929925 0 15.082105 3.27151 20.238756 8.53949 5.490263 4.657067 8.955319 11.449773 8.955319 19.850094l0 255.506255C852.68743 470.913233 839.989727 483.610416 824.297706 483.610416zM455.219017 852.673983 200.506645 852.673983c-7.929925 0-15.082105-3.270487-20.239779-8.538467-5.489239-4.65809-8.955319-11.423167-8.955319-19.850094L171.311547 568.779168c0-15.692401 12.726357-28.389584 28.390747-28.389584 15.69202 0 28.390747 12.697183 28.390747 28.389584l-0.887243 186.6664 192.690312-192.710047 40.173577 40.143279-193.050531 193.016015 188.198837 0c15.69202 0 28.390747 12.697183 28.390747 28.389584C483.608741 839.9768 470.911038 852.673983 455.219017 852.673983z" p-id="5460"></path></svg></div>
-
-      </div>
-      <div class="right3">
-        <EchartsPie></EchartsPie>
-      <div @click="large('pie')" class="large-icon-right"><svg t="1641888518288" fill="#02eefc" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5459" width="16" height="16"><path d="M852.68743 966.232318 171.311547 966.232318c-62.714867 0-113.562988-50.846038-113.562988-113.558335L57.748558 171.324994c0-62.712297 50.848122-113.558335 113.562988-113.558335l681.376907 0c62.714867 0 113.562988 50.846038 113.562988 113.558335l0 681.348989C966.250418 915.38628 915.40332 966.232318 852.68743 966.232318zM909.469948 171.324994c0-31.356149-25.424061-56.779168-56.781494-56.779168L171.311547 114.545826c-31.357433 0-56.781494 25.423019-56.781494 56.779168l0 681.348989c0 31.357172 25.424061 56.779168 56.781494 56.779168l681.376907 0c31.358457 0 56.781494-25.423019 56.781494-56.779168L909.469948 171.324994zM824.297706 483.610416c-15.665413 0-28.390747-12.697183-28.390747-28.389584l0.887243-186.638771L604.102866 461.264479l-40.145947-40.144302 193.023924-193.016015L568.782006 228.104161c-15.693044 0-28.390747-12.697183-28.390747-28.389584s12.697704-28.389584 28.390747-28.389584l254.711349 0c7.929925 0 15.082105 3.27151 20.238756 8.53949 5.490263 4.657067 8.955319 11.449773 8.955319 19.850094l0 255.506255C852.68743 470.913233 839.989727 483.610416 824.297706 483.610416zM455.219017 852.673983 200.506645 852.673983c-7.929925 0-15.082105-3.270487-20.239779-8.538467-5.489239-4.65809-8.955319-11.423167-8.955319-19.850094L171.311547 568.779168c0-15.692401 12.726357-28.389584 28.390747-28.389584 15.69202 0 28.390747 12.697183 28.390747 28.389584l-0.887243 186.6664 192.690312-192.710047 40.173577 40.143279-193.050531 193.016015 188.198837 0c15.69202 0 28.390747 12.697183 28.390747 28.389584C483.608741 839.9768 470.911038 852.673983 455.219017 852.673983z" p-id="5460"></path></svg></div>
-
-      </div>
-    </div>
-    <div class="title">
-      <!-- <span class="titletext">瑞通碳素环保管控平台</span> -->
-      <dv-decoration-11 style="width: 800px" class="title-text"
-        >瑞通炭素环保管控平台
-        <i
-          class="el-icon-full-screen"
-          style="font-size: 16px; cursor: pointer; color: RGB(126, 136, 157)"
-          @click="fullScreen()"
-      /></dv-decoration-11>
-    </div>
-    <el-dialog title="测试" :visible.sync="largeEchart" width="50%">
-        <fullGraph v-if="type === 'graph'"></fullGraph>
-        <fullEchartsBar v-else-if="type === 'bar'"></fullEchartsBar>
-        <FullEchartsPie v-else-if="type === 'pie'"></FullEchartsPie>
-        <fullEchartsRadar v-else-if="type === 'radar'"></fullEchartsRadar>
-        <fullEchartsForm v-else-if="type === 'form'"></fullEchartsForm>
-        <EchartsDialog v-else-if="type === 'line'"></EchartsDialog>
-      </el-dialog>
   </div>
 </template>
 
@@ -62,39 +11,13 @@ import { MarkersPlugin } from "photo-sphere-viewer/dist/plugins/markers.js";
 import "photo-sphere-viewer/dist/plugins/markers.css";
 import { Viewer } from "photo-sphere-viewer";
 import "photo-sphere-viewer/dist/photo-sphere-viewer.css";
-// import EchartsRadar from "../components/List/echartsRadar.vue";
-import EchartsPie from "../components/List/echartsPie";
-import EchartsBar from "../components/List/echartsBar";
-import EchartsForm from "../components/List/echartsForm";
-import EchartsBLine from "../components/List/echartsLine";
-// import Graph from "../components/List/graph";
-import EchartsDialog from "../components/List/echartsDialog";
-import FullEchartsPie from '../components/fullScreen/fullEchartsPie'
-import fullEchartsBar from '../components/fullScreen/fullEchartsBar'
-import fullGraph from '../components/fullScreen/fullGraph'
-import fullEchartsRadar from '../components/fullScreen/fullEchartsRadar'
-import fullEchartsForm from '../components/fullScreen/fullEchartsForm'
-// import fullEchartsLine from '../components/fullScreen/fullEchartsLine'
 export default {
   components: {
-    // Echarts
-    EchartsBar,
-    // EchartsRadar,
-    EchartsPie,
-    EchartsForm,
-    EchartsBLine,
-    // Graph,
-    EchartsDialog,
-    FullEchartsPie,
-    fullEchartsBar,
-    fullGraph,
-    fullEchartsRadar,
-    fullEchartsForm,
-    // fullEchartsLine
   },
   data() {
     return {
       type: '',
+      PSV: null,
       panoramadata: null,
       largeEchart: false,
       img: require("./70.jpg"),
@@ -109,121 +32,42 @@ export default {
   },
   methods: {
     init() {
-      const PSV = new Viewer({
+      this.PSV = new Viewer({
         container: document.getElementById("photosphere"),
         panorama: this.img,
-        defaultZoomLvl: 60,
+        defaultZoomLvl: 50,
+        navbar: ["autorotate", "zoom", "fullscreen", "markers", "markersList"],
         defaultLong: 6.271302993071661, // 初始经度，介于0和2π之间
         defaultLat: -0.22862493322827957, // 初始纬度，介于-π/ 2和π/ 2之间。
-        size: {
-          width: "100%",
-          height: "100%",
-        },
-        navbar: ["autorotate", "zoom", "markers", "download"],
         plugins: [
           [
             MarkersPlugin,
             {
               markers: [
                 {
-                  id: "html1",
-                  longitude: 5.7252865521698775,
-                  latitude: -0.4710962437277053,
-                  html: `<div class="info-warp-peishao">
-                            <div class="info-warp-peishao-title">
-                            <span>焙烧厂区大门颗粒物</span>
-                            </div>
-                            <div class="info-warp-peishao-body">
-                            <span class="left-span">PM2.5:</span><span class="right-span">25mg/m3</span>
-                            <span class="left-span">PM10:</span><span class="right-span">35mg/m3</span>
-                            <span class="left-span">TSP:</span><span class="right-span">45mg/m3</span>
-                            </div>
-                        </div>
-                        <div class='info-line-peishao'></div>`,
-                  width: 32,
-                  height: 32,
-                  anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
-                },
-                {
-                  id: "html2",
-                  longitude: 6.015142458534825,
-                  latitude: -0.33140880893830915,
-                  html: `<div class="info-warp-yishaop2">
-                            <div class="info-warp-yishaop2-title">
-                            <span>一烧车间门口颗粒物</span>
-                            </div>
-                            <div class="info-warp-yishaop2-body">
-                            <span class="left-span">PM2.5:</span><span class="right-span">25mg/m3</span>
-                            <span class="left-span">PM10:</span><span class="right-span">35mg/m3</span>
-                            <span class="left-span">TSP:</span><span class="right-span">45mg/m3</span>
-                            </div>
-                        </div>
-                        <div class='info-line-yishaop2'></div>`,
-                  width: 32,
-                  height: 32,
-                  anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
-                },
-                {
-                  id: "html3",
-                  longitude: 0.07393947431842574,
-                  latitude: -0.12947662495924073,
-                  html: `<div class="info-warp-yaxing">
-                            <div class="info-warp-yaxing-title">
-                            <span>压型车间门口颗粒物</span>
-                            </div>
-                            <div class="info-warp-yaxing-body">
-                            <span class="left-span">PM2.5:</span><span class="right-span">25mg/m3</span>
-                            <span class="left-span">PM10:</span><span class="right-span">35mg/m3</span>
-                            <span class="left-span">TSP:</span><span class="right-span">45mg/m3</span>
-                            </div>
-                        </div>
-                        <div class='info-line-yaxing'></div>`,
-                  width: 32,
-                  height: 32,
-                  anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
-                },
-                {
-                  id: "html4",
-                  longitude: 0.7040675782849761,
-                  latitude: -0.33096554138647405,
-                  html: `<div class="info-warp-yishao">
-                            <div class="info-warp-yishao-title">
-                            <span>石墨化厂区大门颗粒物</span>
-                            </div>
-                            <div class="info-warp-yishao-body">
-                            <span class="left-span">PM2.5:</span><span class="right-span">25mg/m3</span>
-                            <span class="left-span">PM10:</span><span class="right-span">35mg/m3</span>
-                            <span class="left-span">TSP:</span><span class="right-span">45mg/m3</span>
-                            </div>
-                        </div>
-                        <div class='info-line-yishao'></div>`,
-                  width: 32,
-                  height: 32,
-                  anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
-                },
-                {
-                  id: "html5",
-                  longitude: 0.5399753121111439,
-                  latitude: -0.20969402700795658,
-                  html: `<div class="info-warp-yishao">
-                            <div class="info-warp-yishao-title">
-                            <span>石墨化车间大门颗粒物</span>
-                            </div>
-                            <div class="info-warp-yishao-body">
-                            <span class="left-span">PM2.5:</span><span class="right-span">25mg/m3</span>
-                            <span class="left-span">PM10:</span><span class="right-span">35mg/m3</span>
-                            <span class="left-span">TSP:</span><span class="right-span">45mg/m3</span>
-                            </div>
-                        </div>
-                        <div class='info-line-yishao'></div>`,
-                  width: 32,
-                  height: 32,
-                  anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
+                  // polygon marker
+                  id: "polygon",
+                  polylineRad: [
+                    [0.0008044795605804655, -0.22478896099084955],
+                    [0.13165434522719463, -0.08906181842984484],
+                    [0.28816546412137933, -0.07797139275465503],
+                    [0.28722938946089294, -0.34204699313592957],
+                    [0.30432561186429014, -0.46909460250166335],
+                    [0.13958333406474044, -0.4770714485501113],
+                    [0.12037066530252466, -0.3546645425090933],
+                    [0.1426599568666787, -0.3015457310119094],
+                    [0.014183985038274581, -0.3168138512299121],
+                    [0.0008044795605804655, -0.22478896099084955],
+                  ],
+                  svgStyle: {
+                    fill: "transparent",
+                    stroke: "transparent",
+                    strokeWidth: "2px",
+                  },
+                  tooltip: {
+                    content: "测试",
+                    position: "right",
+                  },
                 },
                 {
                   id: "html6",
@@ -234,14 +78,14 @@ export default {
                             <span>无组织VOCs</span>
                             </div>
                             <div class="info-warp-wuzu-body">
-                            <span class="left-span">浓度:</span><span class="right-span">25mg/m3</span>
+                            <span class="left-span">浓度:</span><span class="right-span">0.27mg/m3</span>
                             </div>
                         </div>
                         <div class='info-line-wuzu'></div>`,
                   width: 32,
                   height: 32,
                   anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
+                  tooltip: "无组织VOCs",
                 },
                 {
                   id: "html7",
@@ -259,42 +103,95 @@ export default {
                   width: 32,
                   height: 32,
                   anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
+                  tooltip: "有组织VOCs",
                 },
+                // {
+                //   id: "html8",
+                //   longitude: 6.028658770109717,
+                //   latitude: -0.30994143771483906,
+                //   html: `<div class="info-warp-cems" onclick="test()">
+                //             <div class="info-warp-cems-title">
+                //             <span>超低排放监测(CEMS)</span>
+                //             </div>
+                //             <div class="info-warp-cems-body" id="test">
+
+                //             </div>
+                //         </div>
+                //         <div class='info-line-cems'></div>`,
+                //   width: 32,
+                //   height: 32,
+                //   anchor: "bottom center",
+                //   tooltip: "CEMS",
+                // },
                 {
                   id: "html8",
                   longitude: 6.028658770109717,
                   latitude: -0.30994143771483906,
-                  html: `<div class="info-warp-cems">
+                  html: `<div class="info-warp-cems" id="warp">
                             <div class="info-warp-cems-title">
-                            <span>超低排放监测(CEMS)</span>
+                            <span class="title-span">CEMS</span>
                             </div>
-                            <div class="info-warp-cems-body">
-                              <span class="left-span">颗粒物:</span><span class="right-span">25mg/m3</span>
-                              <span class="left-span">NOx:</span><span class="right-span">35mg/m3</span>
-                              <span class="left-span">SO2:</span><span class="right-span">45mg/m3</span>
-                              <span class="left-span">O3:</span><span class="right-span">45mg/m3</span>
-                              <span class="left-span">CO:</span><span class="right-span">44mg/m3</span>
+                            <div class="info-warp-cems-body" id="body">
+                              <span class="left-span">二氧化硫:</span><span class="right-span">0.021300</span>
+                              <span class="left-span">氧气含量:</span><span class="right-span">20.75469</span><br />
+                              <span class="left-span">烟尘:</span><span class="right-span">1.24756</span><br />
+                              <span class="left-span">烟气温度:</span><span class="right-span">1.39880</span>
+                              <span class="left-span">烟气压力:</span><span class="right-span">-0.02093</span>
                             </div>
                         </div>
                         <div class='info-line-cems'></div>`,
                   width: 32,
                   height: 32,
                   anchor: "bottom center",
-                  tooltip: "PM扬尘仪",
+                  tooltip: "CEMS",
                 },
               ],
             },
           ],
         ],
+        // navbar: ["autorotate", "zoom", "download"],
       });
-      const markersPlugin = PSV.getPlugin(MarkersPlugin);
-      PSV.on("click", (e) => {
+      this.PSV.on("click", (e) => {
         console.log(e, "坐标");
       });
-      markersPlugin.on("select-marker", () => {
-        // console.log(1);
-        this.dialogVisible = true; // 弹出框
+      this.PSV.on("fullscreen-updated", (e) => {
+        if(e.args[0] === true) {
+          this.$router.push('/')
+        }
+        // console.log(e);
+      });
+      const markersPlugin = this.PSV.getPlugin(MarkersPlugin);
+      markersPlugin.on("select-marker", (e, marker) => {
+        if (marker.type === "html") {
+          this.infoTitle = marker.config.tooltip.content;
+          this.dialogVisible = true; // 弹出框
+          this.$store.commit("set_dialog");
+        }
+        // console.log(marker);
+      });
+      markersPlugin.on("over-marker", (e, marker) => {
+        if (marker.id === "polygon") {
+          markersPlugin.updateMarker({
+            id: "polygon",
+            svgStyle: {
+              fill: "rgba(1, 239, 253, 0.2)",
+              stroke: "rgba(1, 239, 253, 0.8)",
+              strokeWidth: "2px",
+            },
+          });
+        }
+      });
+      markersPlugin.on("leave-marker", (e, marker) => {
+        if (marker.id === "polygon") {
+          markersPlugin.updateMarker({
+            id: "polygon",
+            svgStyle: {
+              fill: "transparent",
+              stroke: "transparent",
+              strokeWidth: "2px",
+            },
+          });
+        }
       });
     },
     fullScreen() {
@@ -558,11 +455,11 @@ export default {
 无组织vocs css
 */
 /deep/ .info-warp-wuzu {
-  bottom: 122px;
-  left: -65px;
+  bottom: 62px;
+  left: -50px;
   position: absolute;
-  width: 130px;
-  height: 80px;
+  width: 110px;
+  height: 65px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -573,9 +470,10 @@ export default {
   box-sizing: border-box;
   background-color: rgba(64, 97, 148, 0.534);
   &-title {
-    height: 30px;
+    height: 25px;
     border-bottom: solid 1px #ccc;
     span {
+      font-size: 13px;
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
@@ -584,26 +482,30 @@ export default {
   }
   &-body {
     margin-right: 21%;
-    text-align:right;
-    margin-top: 8px;
+    text-align: right;
+    margin-top: 6px;
     .left-span {
       margin-left: 4%;
       margin-right: 4%;
       color: #dbeaeb;
-      font-size: 14px;
+      font-size: 12px;
+      display: inline-block;
+      -webkit-transform: scale(0.9);
     }
     .right-span {
       color: #02eefc;
-      font-size: 14px;
+      font-size: 12px;
+      display: inline-block;
+      -webkit-transform: scale(0.9);
     }
   }
 }
 /deep/ .info-line-wuzu {
   position: absolute;
   background: rgba(2, 238, 252, 0.4);
-  height: 125px;
+  height: 65px;
   width: 2px;
-  margin: -90px 0px 0px 5px;
+  margin: -30px 0px 0px 5px;
 }
 
 /**
@@ -611,10 +513,10 @@ export default {
 */
 /deep/ .info-warp-youzu {
   bottom: 90px;
-  left: -65px;
+  left: -50px;
   position: absolute;
-  width: 130px;
-  height: 80px;
+  width: 110px;
+  height: 65px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -625,9 +527,10 @@ export default {
   box-sizing: border-box;
   background-color: rgba(64, 97, 148, 0.534);
   &-title {
-    height: 30px;
+    height: 25px;
     border-bottom: solid 1px #ccc;
     span {
+      font-size: 13px;
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
@@ -636,17 +539,21 @@ export default {
   }
   &-body {
     margin-right: 21%;
-    text-align:right;
+    text-align: right;
     margin-top: 8px;
     .left-span {
-      margin-left: 4%;
+      margin-left: 1%;
       margin-right: 4%;
       color: #dbeaeb;
-      font-size: 14px;
+      font-size: 12px;
+      display: inline-block;
+      -webkit-transform: scale(0.9);
     }
     .right-span {
       color: #02eefc;
-      font-size: 14px;
+      font-size: 12px;
+      display: inline-block;
+      -webkit-transform: scale(0.9);
     }
   }
 }
@@ -662,10 +569,10 @@ CEMS css
 */
 /deep/ .info-warp-cems {
   bottom: 0px;
-  left: -90px;
+  left: -55px;
   position: absolute;
-  width: 185px;
-  height: 130px;
+  width: 110px;
+  height: 120px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 10%;
@@ -676,27 +583,32 @@ CEMS css
   box-sizing: border-box;
   background-color: rgba(64, 97, 148, 0.534);
   &-title {
-    height: 30px;
+    height: 25px;
     border-bottom: solid 1px #ccc;
-    span {
+    .title-span {
       color: #d4f3f5;
       text-shadow: 0 0 8px rgb(0, 233, 249);
       margin-left: 4%;
+      font-size: 13px;
       // margin-top: 5%;
     }
   }
   &-body {
-    margin-right: 36%;
-    text-align:right;
+    margin-right: 5%;
+    text-align: right;
     .left-span {
-      margin-left: 4%;
-      margin-right: 4%;
+      // margin-left: 4%;
+      // margin-right: 3%;
       color: #dbeaeb;
-      font-size: 14px;
+      font-size: 12px;
+      display: inline-block;
+      -webkit-transform: scale(0.9);
     }
     .right-span {
       color: #02eefc;
-      font-size: 14px;
+      font-size: 12px;
+      display: inline-block;
+      -webkit-transform: scale(0.9);
     }
   }
 }
@@ -727,6 +639,29 @@ CEMS css
   top: 0;
   left: 0;
   z-index: 99;
+}
+/deep/ .psv-panel{
+  width: 260px;
+  height: 100% !important;
+}
+/deep/ .psv-panel-resizer{
+  display: none;
+}
+/deep/ .psv-panel-close-button{
+  background-color: transparent;
+  left: 0;
+  z-index: 5000;
+}
+/deep/ .psv-panel-content{
+  backdrop-filter: blur(5px);
+  // border: solid 2px rgba(64, 97, 148, 0.6);
+  // -webkit-box-shadow: 0 1px 3px rgba(0 0 0 / 30%);
+  // box-shadow: 0 1px 3px rgba(0 ,0 ,0 , 30%);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  // width: 35% !important;
+  // height: 45% !important;
+  background-color: rgba(64, 97, 148, 0.534);
 }
 .title {
   // width: 40%;

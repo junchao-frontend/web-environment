@@ -13,54 +13,48 @@
 
 <script>
 // import echarts from "echarts";
+import { getCollectionData } from "@/api/line.js";
 export default {
   data() {
-    return {};
+    return {
+      chartData: "",
+    };
   },
   mounted() {
     this.initBar();
   },
   methods: {
-    initBar() {
+    async initBar() {
+      var params;
+      const { data } = await getCollectionData(params);
+      var echartsData = data.data;
+      // eslint-disable-next-line no-unused-vars
+      var totalValue = 0
+      echartsData.forEach((item, index) => {
+        item.id = index;
+        totalValue += item.num;
+      });
+      // console.log(totalValue);
+      echartsData.unshift({
+        id: 'total',
+        num: totalValue
+      })
+      // console.log(echartsData);
+      this.chartData = echartsData;
       let myChart = this.$echarts.init(document.getElementById("Pie")); //初始化实例
-      let chartData = [
-        {
-          name: "重大危险源数量",
-          num: 4600,
-          id: "total",
-          key: "TOTAL",
-        },
-        {
-          name: "CEMS",
-          num: 3000,
-          id: "one",
-          key: "ONE",
-        },
-        {
-          name: "VOCs",
-          num: 1000,
-          id: "two",
-          key: "TWO",
-        },
-        {
-          name: "治理数据",
-          num: 1000,
-          id: "three",
-          key: "THREE",
-        }
-      ];
       let total;
-      let colorArr = ["#FE7B7B", "#FFBD46", "#F5E139"];
+      let colorArr = ["#19a3df", "#3cab8f", "#db6c72"];
       let seriesData = [];
       let nameArr = [];
+      // console.log(this.chartData);
       // eslint-disable-next-line no-unused-vars
-      chartData.forEach((item, index) => {
+      this.chartData.forEach((item, index) => {
         let value = item.num;
         if (item.id === "total") {
           total = value;
         }
-        let colorIndex = ["one", "two", "three"].indexOf(item.id);
-        if (["one", "two", "three"].includes(item.id)) {
+        let colorIndex = [0, 1, 2].indexOf(item.id);
+        if ([0, 1, 2].includes(item.id)) {
           nameArr.push(item.name);
           if (value) {
             seriesData.push({
@@ -78,36 +72,36 @@ export default {
       // eslint-disable-next-line no-unused-vars
       var option = {
         title: {
-        text: `{a|${total}}`,
-        left: '28%',
-        top: '60%',
-        textStyle: {
+          text: `{a|${total}}`,
+          left: "28%",
+          top: "60%",
+          textStyle: {
             rich: {
-                a: {
-                    // width: 100,
-                    align: 'center',
-                    fontSize: 20,
-                    color: '#fff',
-                    fontWight: 300,
-                    border: '1px solid red',
-                },
+              a: {
+                // width: 100,
+                align: "center",
+                fontSize: 20,
+                color: "#fff",
+                fontWight: 300,
+                border: "1px solid red",
+              },
             },
+          },
         },
-    },
         tooltip: {
-        trigger: 'item',
-        show: true,
-        formatter: (item) => {
+          trigger: "item",
+          show: true,
+          formatter: (item) => {
             let data = item.data;
             if (!data.name) {
-                return '';
+              return "";
             }
             return `${data.name}: ${data.value}`;
+          },
+          backgroundColor: "rgba(0,0,0,0.7)", // 背景
+          padding: [8, 10],
+          extraCssText: "box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);",
         },
-        backgroundColor: 'rgba(0,0,0,0.7)', // 背景
-        padding: [8, 10],
-        extraCssText: 'box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);',
-    },
         legend: {
           orient: "vertical",
           icon: "circle",
@@ -170,7 +164,7 @@ export default {
                 seriesData.forEach((item) => {
                   total += item.value;
                 });
-                percent = (params.value / total) * 100;
+                percent = ((params.value / total) * 100).toFixed(1);
                 return percent + "%";
               },
             },

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { getCemsData } from "@/api/line.js";
 export default {
   name: "",
   components: {},
@@ -23,10 +24,22 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.$nextTick(this.initDialogs());
+    this.initDialogs()
   },
   methods: {
-    initDialogs() {
+    async initDialogs() {
+      let params = {
+        code: 202201262134,
+      };
+      const {data} = await getCemsData(params)
+      let noVOC = data.data.noVOC.info
+      // console.log(noVOC);
+      let xAxis = noVOC['无组织VOC'].time
+      let xAxisData = []
+      xAxis.forEach(item => {
+        xAxisData.push(item.substring(6))
+      })
+      let noVOCData = noVOC['无组织VOC'].data
       let myChart = this.$echarts.init(this.$refs.line, "chalk1"); //初始化实例
       let option = {
         tooltip: {
@@ -67,7 +80,7 @@ export default {
           type: "category",
           axisTick: { show: false },
           boundaryGap: false,
-          data: ["08:01", "08:02", "08:03", "08:04", "08:05", "08:06"],
+          data: xAxisData,
           //设置轴线的属性
           axisLine: {
             lineStyle: {
@@ -86,8 +99,8 @@ export default {
           splitLine: {
             show: false,
           },
-          min: 0,
-          max: 300,
+          max: 'dataMax',
+          min: 'dataMin',
           splitNumber : 3,
           axisTick: { show: false },
           axisLine: {
@@ -106,7 +119,7 @@ export default {
         series: [
           {
             name: "无组织",
-            data: [100, 260, 170, 200, 100, 200],
+            data: noVOCData,
             type: "line",
             // symbolSize: 7,
             lineStyle: {
@@ -138,21 +151,21 @@ export default {
               },
             },
           },
-          {
-            name: "有组织",
-            data: [210, 230, 240, 178, 160, 180],
-            type: "line",
-            // symbolSize: 7,
-            lineStyle: {
-              color: "#0bdb88",
-              type:'dashed'
-            },
-            itemStyle: {
-              color: "#0bdb88",
-              borderColor: "#a3c8d8",
-            },
-            smooth: false,
-          },
+          // {
+          //   name: "有组织",
+          //   data: [210, 230, 240, 178, 160, 180],
+          //   type: "line",
+          //   // symbolSize: 7,
+          //   lineStyle: {
+          //     color: "#0bdb88",
+          //     type:'dashed'
+          //   },
+          //   itemStyle: {
+          //     color: "#0bdb88",
+          //     borderColor: "#a3c8d8",
+          //   },
+          //   smooth: false,
+          // },
         ],
       };
 

@@ -26,7 +26,10 @@
       <div id="photosphere" class="photosphere"></div>
       <div class="middle-echarts">
         <dv-border-box-12 class="border">
-          <EchartsLines :dialogVisible="dialogVisible"  @openDialog="openDialog"/>
+          <EchartsLines
+            :dialogVisible="dialogVisible"
+            @openDialog="openDialog"
+          />
         </dv-border-box-12>
       </div>
     </div>
@@ -145,9 +148,10 @@
         >瑞通炭素环保管控平台
         <i
           class="el-icon-full-screen"
+          :class="isFullScreen ? 'full-icon' : ''"
           style="font-size: 16px; cursor: pointer; color: RGB(126, 136, 157)"
           @click="fullScreen()"
-      />
+        />
       </dv-decoration-11>
     </div>
     <div class="date">
@@ -196,20 +200,27 @@
           近一个月
         </div>
       </div> -->
-      <el-tabs v-model="firstInit" @tab-click="changeCemsLine" >
-        <template v-for="(item,index) in cemsNames">
-        <el-tab-pane :label="item" :name="item" :key="index"></el-tab-pane>
+      <el-tabs v-model="firstInit" @tab-click="changeCemsLine">
+        <template v-for="(item, index) in cemsNames">
+          <el-tab-pane :label="item" :name="item" :key="index"></el-tab-pane>
         </template>
       </el-tabs>
-      <EchartsDialog :cemsDataItem="cemsDataItem"></EchartsDialog>
+      <cemsEchartsDialog :cemsDataItem="cemsDataItem"></cemsEchartsDialog>
+    </el-dialog>
+    <el-dialog
+      title="无组织VOCs"
+      :visible.sync="VOCdialogVisible"
+      width="50%"
+    >
+      <vocEchartsDialog></vocEchartsDialog>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 import "photo-sphere-viewer/dist/plugins/markers.css";
-import { getCemsData } from '@/api/line.js'
+import { getCemsData } from "@/api/line.js";
 import { Viewer } from "photo-sphere-viewer";
 import "photo-sphere-viewer/dist/photo-sphere-viewer.css";
 import RightLine2 from "../components/List/rightLine2";
@@ -218,7 +229,8 @@ import EchartsBar from "../components/List/echartsBar";
 import EchartsForm from "../components/List/echartsForm";
 import RightLine1 from "../components/List/rightLine1";
 import Tips from "../components/List/Tips";
-import EchartsDialog from "../components/List/echartsDialog";
+import cemsEchartsDialog from "../components/List/cemsEchartsDialog";
+import vocEchartsDialog from "../components/List/vocEchartsDialog";
 import EchartsLine from "../components/List/echartsLine";
 import EchartsLines from "../components/List/echartsLines";
 import { MarkersPlugin } from "photo-sphere-viewer/dist/plugins/markers.js";
@@ -232,18 +244,21 @@ export default {
     Tips,
     EchartsLine,
     EchartsLines,
-    EchartsDialog,
+    cemsEchartsDialog,
+    vocEchartsDialog
   },
   data() {
     return {
       nowdata: null,
-      firstInit: '一氧化氮',
+      isFullScreen: false,
+      firstInit: "一氧化氮",
       cemsDataArr: [], // cems数据集合
       cemsDataItem: [], // cems单个折线数据
       cemsNames: [],
       infoTitle: "",
       day: 20,
       dialogVisible: false,
+      VOCdialogVisible: false,
       img: require("./70.jpg"),
       clickItem1: false,
       clickItem2: false,
@@ -258,20 +273,34 @@ export default {
         data: [100, 260, 170, 200, 100, 200],
       },
       PSV: null,
+      PSV1: null,
     };
   },
   computed: {
-    ...mapState(['dataName', 'realTimeData'])
+    ...mapState(["dataName", "realTimeData", "dialog"]),
   },
-  created() {},
+  created() {
+    // document.onkeydown = () => {
+    //   let key = window.event.keyCode;
+    //   if (key === 27 && this.PSV1) {
+    //     this.PSV1.destroy();
+    //     this.$nextTick(() => {
+    //       this.init();
+    //     });
+    //     this.isFullScreen = false;
+    //   }
+    // };
+  },
   mounted() {
-    this.init();
+    this.$nextTick(() => {
+      this.init();
+    });
     this.getTimes();
     this.openItem("1");
-    this.initDialog()
-    setTimeout(()=> {
-      this.test()
-    },5000)
+    this.initDialog();
+    setTimeout(() => {
+      this.test();
+    }, 5000);
   },
   methods: {
     init() {
@@ -321,7 +350,7 @@ export default {
                             <span>无组织VOCs</span>
                             </div>
                             <div class="info-warp-wuzu-body">
-                            <span class="left-span">浓度:</span><span class="right-span">25mg/m3</span>
+                            <span class="left-span">浓度:</span><span class="right-span">0.27ppm</span>
                             </div>
                         </div>
                         <div class='info-line-wuzu'></div>`,
@@ -357,7 +386,7 @@ export default {
                 //             <span>超低排放监测(CEMS)</span>
                 //             </div>
                 //             <div class="info-warp-cems-body" id="test">
-                              
+
                 //             </div>
                 //         </div>
                 //         <div class='info-line-cems'></div>`,
@@ -372,7 +401,7 @@ export default {
                   latitude: -0.30994143771483906,
                   html: `<div class="info-warp-cems" id="warp">
                             <div class="info-warp-cems-title">
-                            <span class="title-span">超低排放监测(CEMS)</span>
+                            <span class="title-span" id="title-span">煅烧CEMS</span>
                             </div>
                             <div class="info-warp-cems-body" id="body">
                               <span class="left-span">二氧化硫:</span><span class="right-span">0.021300</span>
@@ -392,20 +421,26 @@ export default {
             },
           ],
         ],
-        // size: {
-        //   width: "100%",
-        //   height: "100%",
-        // },
         // navbar: ["autorotate", "zoom", "download"],
       });
       this.PSV.on("click", (e) => {
         console.log(e, "坐标");
       });
+      this.PSV.on("fullscreen-updated", (e) => {
+        if(e.args[0] === true) {
+          this.$router.push('/photo')
+        }
+        // console.log(e);
+      });
       const markersPlugin = this.PSV.getPlugin(MarkersPlugin);
       markersPlugin.on("select-marker", (e, marker) => {
-        if (marker.type === "html") {
+        if (marker.id === "html8") {
           this.infoTitle = marker.config.tooltip.content;
           this.dialogVisible = true; // 弹出框
+          this.$store.commit("set_dialog");
+        } else if (marker.id === 'html6') {
+          this.VOCdialogVisible = true
+          this.$store.commit("set_dialog");
         }
         // console.log(marker);
       });
@@ -434,41 +469,6 @@ export default {
         }
       });
     },
-    // foo() {
-    //   const markersPlugin = this.PSV.getPlugin(MarkersPlugin);
-    //   markersPlugin.addMarker({
-    //     id: "html8",
-    //     longitude: 6.028658770109717,
-    //     latitude: -0.30994143771483906,
-    //     html: `<div class="info-warp-cems" onclick="test()">
-    //               <div class="info-warp-cems-title">
-    //               <span>超低排放监测(CEMS)</span>
-    //               </div>
-    //               <div class="info-warp-cems-body" id="test">
-    //                 <span class="left-span">颗粒物:</span><span class="right-span">25mg/m3</span>
-    //                 <span class="left-span">NOx:</span><span class="right-span">35mg/m3</span>
-    //                 <span class="left-span">SO2:</span><span class="right-span">45mg/m3</span>
-    //                 <span class="left-span">O3:</span><span class="right-span">45mg/m3</span>
-    //                 <span class="left-span">CO:</span><span class="right-span">44mg/m3</span>
-    //               </div>
-    //           </div>
-    //           <div class='info-line-cems'></div>`,
-    //     width: 32,
-    //     height: 32,
-    //     anchor: "bottom center",
-    //     tooltip: "CEMS",
-    //   });
-    //   // let s = document.getElementById('test')
-    //   // console.log(s);
-    //   // let span1 = document.createElement('SPAN')
-    //   // span1.className = 'left-span'
-    //   // span1.innerHTML = "颗粒物:"
-    //   // let span2 = document.createElement('SPAN')
-    //   // span2.className = 'right-span'
-    //   // span2.innerHTML = '25mg/m3'
-    //   // s.appendChild(span1)
-    //   // s.appendChild(span2)
-    // },
     openItem(a) {
       if (a === "1") {
         this.isSelected1 = true;
@@ -587,196 +587,200 @@ export default {
       }
     },
     openDialog(params) {
-      this.dialogVisible = params
+      this.dialogVisible = params;
+      this.$store.commit("set_dialog");
     },
     fullScreen() {
-      var docElm = document.documentElement
+      var docElm = document.documentElement;
       // W3C
       if (docElm.requestFullscreen) {
-        docElm.requestFullscreen()
+        docElm.requestFullscreen();
       }
       // FireFox
       else if (docElm.mozRequestFullScreen) {
-        docElm.mozRequestFullScreen()
+        docElm.mozRequestFullScreen();
       }
       // Chrome等
       else if (docElm.webkitRequestFullScreen) {
-        docElm.webkitRequestFullScreen()
+        docElm.webkitRequestFullScreen();
+        console.log(11111);
       }
       // IE11
       // eslint-disable-next-line no-undef
       else if (elem.msRequestFullscreen) {
         // eslint-disable-next-line no-undef
-        elem.msRequestFullscreen()
+        elem.msRequestFullscreen();
       }
       // 退出全屏
       // W3C
       if (document.exitFullscreen) {
-        document.exitFullscreen()
+        document.exitFullscreen();
       }
       // FireFox
       else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen()
+        document.mozCancelFullScreen();
       }
       // Chrome等
       else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen()
+        document.webkitCancelFullScreen();
         // eslint-disable-next-line no-undef
-        data.name = '全屏'
+        data.name = "全屏";
       }
       // IE11
       else if (document.msExitFullscreen) {
-        document.msExitFullscreen()
+        document.msExitFullscreen();
       }
     },
-    async initDialog () {
+    async initDialog() {
       let params = {
         code: 202201152021,
       };
-      const {data} = await getCemsData(params)
-      const cemsData = data.data.info
-      this.cemsNames = Object.keys(cemsData)
-      this.cemsDataArr = Object.values(cemsData)
-      this.cemsDataItem = this.cemsDataArr[0]
+      const { data } = await getCemsData(params);
+      const cemsData = data.data.info;
+      this.cemsNames = Object.keys(cemsData);
+      this.cemsDataArr = Object.values(cemsData);
+      this.cemsDataItem = this.cemsDataArr[0];
       // console.log(this.cemsDataArr);
     },
-    changeCemsLine (tab) {
-      if(tab.index === '0') {
-        this.cemsDataItem = this.cemsDataArr[0]
-      } else if(tab.index === '1') {
-        this.cemsDataItem = this.cemsDataArr[1]
-      } else if(tab.index === '2') {
-        this.cemsDataItem = this.cemsDataArr[2]
-      } else if(tab.index === '3') {
-        this.cemsDataItem = this.cemsDataArr[3]
-      } else if(tab.index === '4') {
-        this.cemsDataItem = this.cemsDataArr[4]
-      } else if(tab.index === '5') {
-        this.cemsDataItem = this.cemsDataArr[5]
-      } else if(tab.index === '6') {
-        this.cemsDataItem = this.cemsDataArr[6]
-      } else if(tab.index === '7') {
-        this.cemsDataItem = this.cemsDataArr[7]
-      } else if(tab.index === '8') {
-        this.cemsDataItem = this.cemsDataArr[8]
-      } else if(tab.index === '9') {
-        this.cemsDataItem = this.cemsDataArr[9]
+    changeCemsLine(tab) {
+      if (tab.index === "0") {
+        this.cemsDataItem = this.cemsDataArr[0];
+      } else if (tab.index === "1") {
+        this.cemsDataItem = this.cemsDataArr[1];
+      } else if (tab.index === "2") {
+        this.cemsDataItem = this.cemsDataArr[2];
+      } else if (tab.index === "3") {
+        this.cemsDataItem = this.cemsDataArr[3];
+      } else if (tab.index === "4") {
+        this.cemsDataItem = this.cemsDataArr[4];
+      } else if (tab.index === "5") {
+        this.cemsDataItem = this.cemsDataArr[5];
+      } else if (tab.index === "6") {
+        this.cemsDataItem = this.cemsDataArr[6];
+      } else if (tab.index === "7") {
+        this.cemsDataItem = this.cemsDataArr[7];
+      } else if (tab.index === "8") {
+        this.cemsDataItem = this.cemsDataArr[8];
+      } else if (tab.index === "9") {
+        this.cemsDataItem = this.cemsDataArr[9];
       }
     },
-    test () {
-      let warp = document.getElementById('warp')
-      let body = document.getElementById('body')
-      let span1 = document.createElement('SPAN')
-      span1.className = 'left-span'
-      span1.innerHTML= this.dataName[0] + ':'
-      let span2 = document.createElement('SPAN')
-      span2.className = 'right-span'
-      span2.innerHTML= this.realTimeData[0]
-      let span3 = document.createElement('SPAN')
-      span3.className = 'left-span'
-      span3.innerHTML= this.dataName[1] + ':'
-      let span4 = document.createElement('SPAN')
-      span4.className = 'right-span'
-      span4.innerHTML= this.realTimeData[1]
-      let br = document.createElement('BR')
-      let br1 = document.createElement('BR')
-      let span5 = document.createElement('SPAN')
-      span5.className = 'left-span'
-      span5.innerHTML= this.dataName[2] + ':'
-      let span6 = document.createElement('SPAN')
-      span6.className = 'right-span'
-      span6.innerHTML= this.realTimeData[2]
-      let span7 = document.createElement('SPAN')
-      span7.className = 'left-span'
-      span7.innerHTML= this.dataName[3] + ':'
-      let span8 = document.createElement('SPAN')
-      span8.className = 'right-span'
-      span8.innerHTML= this.realTimeData[3]
-      let span9 = document.createElement('SPAN')
-      span9.className = 'left-span'
-      span9.innerHTML= this.dataName[4] + ':'
-      let span10 = document.createElement('SPAN')
-      span10.className = 'right-span'
-      span10.innerHTML= this.realTimeData[4]
-      let newBody = document.createElement('DIV')
-      newBody.className = 'info-warp-cems-body'
-      newBody.id = 'newBody'
-      newBody.appendChild(span1)
-      newBody.appendChild(span2)
-      newBody.appendChild(span3)
-      newBody.appendChild(span4)
-      newBody.appendChild(br)
-      newBody.appendChild(span5)
-      newBody.appendChild(span6)
-      newBody.appendChild(br1)
-      newBody.appendChild(span7)
-      newBody.appendChild(span8)
-      newBody.appendChild(span9)
-      newBody.appendChild(span10)
-      warp.replaceChild(newBody,body)
-      setTimeout(()=>{
-        this.test1()
-      },5000)
+    test() {
+      let warp = document.getElementById("warp");
+      let body = document.getElementById("body");
+      let span1 = document.createElement("SPAN");
+      // let title = document.getElementById('title-span')
+      // console.log(title);
+      span1.className = "left-span";
+      span1.innerHTML = this.dataName[0] + ":";
+      let span2 = document.createElement("SPAN");
+      span2.className = "right-span";
+      span2.innerHTML = this.realTimeData[0];
+      let span3 = document.createElement("SPAN");
+      span3.className = "left-span";
+      span3.innerHTML = this.dataName[1] + ":";
+      let span4 = document.createElement("SPAN");
+      span4.className = "right-span";
+      span4.innerHTML = this.realTimeData[1];
+      let br = document.createElement("BR");
+      let br1 = document.createElement("BR");
+      let span5 = document.createElement("SPAN");
+      span5.className = "left-span";
+      span5.innerHTML = this.dataName[2] + ":";
+      let span6 = document.createElement("SPAN");
+      span6.className = "right-span";
+      span6.innerHTML = this.realTimeData[2];
+      let span7 = document.createElement("SPAN");
+      span7.className = "left-span";
+      span7.innerHTML = this.dataName[3] + ":";
+      let span8 = document.createElement("SPAN");
+      span8.className = "right-span";
+      span8.innerHTML = this.realTimeData[3];
+      let span9 = document.createElement("SPAN");
+      span9.className = "left-span";
+      span9.innerHTML = this.dataName[4] + ":";
+      let span10 = document.createElement("SPAN");
+      span10.className = "right-span";
+      span10.innerHTML = this.realTimeData[4];
+      let newBody = document.createElement("DIV");
+      newBody.className = "info-warp-cems-body";
+      newBody.id = "newBody";
+      newBody.appendChild(span1);
+      newBody.appendChild(span2);
+      newBody.appendChild(span3);
+      newBody.appendChild(span4);
+      newBody.appendChild(br);
+      newBody.appendChild(span5);
+      newBody.appendChild(span6);
+      newBody.appendChild(br1);
+      newBody.appendChild(span7);
+      newBody.appendChild(span8);
+      newBody.appendChild(span9);
+      newBody.appendChild(span10);
+      warp.replaceChild(newBody, body);
+      setTimeout(() => {
+        this.test1();
+      }, 5000);
       // console.log(this.dataName);
     },
-    test1 () {
-      let warp = document.getElementById('warp')
-      let body = document.getElementById('newBody')
-      let span1 = document.createElement('SPAN')
-      span1.className = 'left-span'
-      span1.innerHTML= this.dataName[5] + ':'
-      let span2 = document.createElement('SPAN')
-      span2.className = 'right-span'
-      span2.innerHTML= this.realTimeData[5]
-      let span3 = document.createElement('SPAN')
-      span3.className = 'left-span'
-      span3.innerHTML= this.dataName[6] + ':'
-      let span4 = document.createElement('SPAN')
-      span4.className = 'right-span'
-      span4.innerHTML= this.realTimeData[6]
-      let br = document.createElement('BR')
-      let br1 = document.createElement('BR')
-      let br2 = document.createElement('BR')
-      let span5 = document.createElement('SPAN')
-      span5.className = 'left-span'
-      span5.innerHTML= this.dataName[7] + ':'
-      let span6 = document.createElement('SPAN')
-      span6.className = 'right-span'
-      span6.innerHTML= this.realTimeData[7]
-      let span7 = document.createElement('SPAN')
-      span7.className = 'left-span'
-      span7.innerHTML= this.dataName[8] + ':'
-      let span8 = document.createElement('SPAN')
-      span8.className = 'right-span'
-      span8.innerHTML= this.realTimeData[8]
-      let span9 = document.createElement('SPAN')
-      span9.className = 'left-span'
-      span9.innerHTML= this.dataName[9] + ':'
-      let span10 = document.createElement('SPAN')
-      span10.className = 'right-span'
-      span10.innerHTML= this.realTimeData[9]
-      let newBody = document.createElement('DIV')
-      newBody.className = 'info-warp-cems-body'
-      newBody.id = 'body'
-      newBody.appendChild(span1)
-      newBody.appendChild(span2)
-      newBody.appendChild(br2)
-      newBody.appendChild(span3)
-      newBody.appendChild(span4)
-      newBody.appendChild(br)
-      newBody.appendChild(span5)
-      newBody.appendChild(span6)
-      newBody.appendChild(br1)
-      newBody.appendChild(span7)
-      newBody.appendChild(span8)
-      newBody.appendChild(span9)
-      newBody.appendChild(span10)
-      warp.replaceChild(newBody,body)
-      setTimeout(()=> {
-      this.test()
-    },5000)
+    test1() {
+      let warp = document.getElementById("warp");
+      let body = document.getElementById("newBody");
+      let span1 = document.createElement("SPAN");
+      span1.className = "left-span";
+      span1.innerHTML = this.dataName[5] + ":";
+      let span2 = document.createElement("SPAN");
+      span2.className = "right-span";
+      span2.innerHTML = this.realTimeData[5];
+      let span3 = document.createElement("SPAN");
+      span3.className = "left-span";
+      span3.innerHTML = this.dataName[6] + ":";
+      let span4 = document.createElement("SPAN");
+      span4.className = "right-span";
+      span4.innerHTML = this.realTimeData[6];
+      let br = document.createElement("BR");
+      let br1 = document.createElement("BR");
+      let br2 = document.createElement("BR");
+      let span5 = document.createElement("SPAN");
+      span5.className = "left-span";
+      span5.innerHTML = this.dataName[7] + ":";
+      let span6 = document.createElement("SPAN");
+      span6.className = "right-span";
+      span6.innerHTML = this.realTimeData[7];
+      let span7 = document.createElement("SPAN");
+      span7.className = "left-span";
+      span7.innerHTML = this.dataName[8] + ":";
+      let span8 = document.createElement("SPAN");
+      span8.className = "right-span";
+      span8.innerHTML = this.realTimeData[8];
+      let span9 = document.createElement("SPAN");
+      span9.className = "left-span";
+      span9.innerHTML = this.dataName[9] + ":";
+      let span10 = document.createElement("SPAN");
+      span10.className = "right-span";
+      span10.innerHTML = this.realTimeData[9];
+      let newBody = document.createElement("DIV");
+      newBody.className = "info-warp-cems-body";
+      newBody.id = "body";
+      newBody.appendChild(span1);
+      newBody.appendChild(span2);
+      newBody.appendChild(br2);
+      newBody.appendChild(span3);
+      newBody.appendChild(span4);
+      newBody.appendChild(br);
+      newBody.appendChild(span5);
+      newBody.appendChild(span6);
+      newBody.appendChild(br1);
+      newBody.appendChild(span7);
+      newBody.appendChild(span8);
+      newBody.appendChild(span9);
+      newBody.appendChild(span10);
+      warp.replaceChild(newBody, body);
+      setTimeout(() => {
+        this.test();
+      }, 5000);
       // console.log(this.dataName);
-    }
+    },
   },
 };
 </script>
@@ -1020,22 +1024,22 @@ export default {
     }
   }
   &-body {
-    margin-right: 21%;
+    margin-right: 27%;
     text-align: right;
     margin-top: 6px;
     .left-span {
       margin-left: 4%;
-      margin-right: 4%;
+      // margin-right: 4%;
       color: #dbeaeb;
       font-size: 12px;
       display: inline-block;
-      -webkit-transform:scale(0.9);
+      -webkit-transform: scale(0.9);
     }
     .right-span {
       color: #02eefc;
       font-size: 12px;
       display: inline-block;
-      -webkit-transform:scale(0.9);
+      -webkit-transform: scale(0.9);
     }
   }
 }
@@ -1086,13 +1090,13 @@ export default {
       color: #dbeaeb;
       font-size: 12px;
       display: inline-block;
-      -webkit-transform:scale(0.9);
+      -webkit-transform: scale(0.9);
     }
     .right-span {
       color: #02eefc;
       font-size: 12px;
       display: inline-block;
-      -webkit-transform:scale(0.9);
+      -webkit-transform: scale(0.9);
     }
   }
 }
@@ -1108,9 +1112,9 @@ CEMS css
 */
 /deep/ .info-warp-cems {
   bottom: 0px;
-  left: -75px;
+  left: -55px;
   position: absolute;
-  width: 150px;
+  width: 110px;
   height: 120px;
   border-top-left-radius: 10%;
   border-top-right-radius: 0;
@@ -1133,7 +1137,7 @@ CEMS css
     }
   }
   &-body {
-    margin-right: 30%;
+    margin-right: 5%;
     text-align: right;
     .left-span {
       // margin-left: 4%;
@@ -1141,13 +1145,13 @@ CEMS css
       color: #dbeaeb;
       font-size: 12px;
       display: inline-block;
-      -webkit-transform:scale(0.9);
+      -webkit-transform: scale(0.9);
     }
     .right-span {
       color: #02eefc;
       font-size: 12px;
       display: inline-block;
-      -webkit-transform:scale(0.9);
+      -webkit-transform: scale(0.9);
     }
   }
 }
@@ -1456,26 +1460,56 @@ CEMS css
     border-bottom: 1px solid #fdcc01;
   }
 }
-.el-tabs{
+.el-tabs {
   position: absolute;
-  top:13%;
-  /deep/ .el-tabs__item{
+  top: 13%;
+  /deep/ .el-tabs__item {
     padding: 0 10px;
     font-size: 12px;
     color: #a6bde9;
   }
-  /deep/ .el-tabs__item:hover{
+  /deep/ .el-tabs__item:hover {
     color: #00efff;
   }
-  /deep/ .el-tabs__item.is-active{
+  /deep/ .el-tabs__item.is-active {
     color: #00efff;
   }
-  /deep/ .el-tabs__active-bar{
+  /deep/ .el-tabs__active-bar {
+    display: none;
     background-color: #00efff;
   }
+  /deep/ .el-tabs__nav-wrap::after {
+    background-color: transparent;
+  }
 }
-.el-icon-full-screen{
+.el-icon-full-screen {
   position: relative;
-  z-index: 2000;
+  z-index: 2;
+}
+.full-icon {
+  z-index: -1;
+}
+/deep/ .psv-panel{
+  width: 260px;
+  height: 100% !important;
+}
+/deep/ .psv-panel-resizer{
+  display: none;
+}
+/deep/ .psv-panel-close-button{
+  background-color: transparent;
+  left: 0;
+  z-index: 5000;
+}
+/deep/ .psv-panel-content{
+  backdrop-filter: blur(5px);
+  // border: solid 2px rgba(64, 97, 148, 0.6);
+  // -webkit-box-shadow: 0 1px 3px rgba(0 0 0 / 30%);
+  // box-shadow: 0 1px 3px rgba(0 ,0 ,0 , 30%);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  // width: 35% !important;
+  // height: 45% !important;
+  background-color: rgba(64, 97, 148, 0.534);
 }
 </style>
