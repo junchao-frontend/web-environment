@@ -202,12 +202,13 @@ export default {
             data: this.echartsData[0].data,
             type: "line",
             // symbolSize: 7,
+            symbol: 'circle',
+            symbolSize: 6,
             showSymbol: false,
-            symbolSize: 8,
             zlevel: 3,
             itemStyle: {
               color: "#19a3df",
-              borderColor: "#a3c8d8",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -344,13 +345,13 @@ export default {
           {
             data: this.echartsData[1].data,
             type: "line",
-            // symbolSize: 7,
+            symbol: 'circle',
+            symbolSize: 6,
             showSymbol: false,
-            symbolSize: 8,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#d5b00a",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -486,13 +487,14 @@ export default {
           {
             data: this.echartsData[2].data,
             type: "line",
+            symbol: 'circle',
             // symbolSize: 7,
             showSymbol: false,
-            symbolSize: 8,
+            symbolSize: 6,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#3fb594",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -632,11 +634,12 @@ export default {
             type: "line",
             // symbolSize: 7,
             showSymbol: false,
-            symbolSize: 8,
+            symbol: 'circle',
+            symbolSize: 6,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#db6c72",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -773,13 +776,13 @@ export default {
           {
             data: this.echartsData[4].data,
             type: "line",
-            // symbolSize: 7,
+            symbol: 'circle',
+            symbolSize: 6,
             showSymbol: false,
-            symbolSize: 8,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#585eaa",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -918,11 +921,12 @@ export default {
             type: "line",
             // symbolSize: 7,
             showSymbol: false,
-            symbolSize: 8,
+            symbol: 'circle',
+            symbolSize: 6,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#d5b00a",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -1063,13 +1067,13 @@ export default {
           {
             data: this.echartsData[6].data,
             type: "line",
-            // symbolSize: 7,
+            symbol: 'circle',
+            symbolSize: 6,
             showSymbol: false,
-            symbolSize: 8,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#3fb594",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -1205,13 +1209,13 @@ export default {
           {
             data: this.echartsData[7].data,
             type: "line",
-            // symbolSize: 7,
+            symbol: 'circle',
+            symbolSize: 6,
             showSymbol: false,
-            symbolSize: 8,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#db6c72",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -1347,13 +1351,13 @@ export default {
           {
             data: this.echartsData[8].data,
             type: "line",
-            // symbolSize: 7,
             showSymbol: false,
-            symbolSize: 8,
+            symbol: 'circle',
+            symbolSize: 6,
             zlevel: 3,
             itemStyle: {
               color: "#19a3df",
-              borderColor: "#a3c8d8",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {
@@ -1489,13 +1493,13 @@ export default {
           {
             data: this.echartsData[9].data,
             type: "line",
-            // symbolSize: 7,
+            symbol: 'circle',
+            symbolSize: 6,
             showSymbol: false,
-            symbolSize: 8,
             zlevel: 3,
             itemStyle: {
-              color: "#19a3df",
-              borderColor: "#a3c8d8",
+              color: "#585eaa",
+              // borderColor: "#a3c8d8",
             },
             lineStyle: {
               normal: {

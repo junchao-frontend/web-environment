@@ -10,7 +10,7 @@ service.interceptors.request.use(
     config => {
         // eslint-disable-next-line no-unused-vars
         const token = Cookies.get('token')
-        // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYxZDgwODJjMDdmMjBjYzdmOTYyNmY4ZSIsImFjY291bnQiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDEwJEJHMk1xek8xSUhHLlNob2xFRVBub3VMSlg5NmtRaXhtMGtGRklVaWRWZEpNeU15Y1dtZDBxIiwibmFtZSI6ImFkbWluIiwiQXZhdGFyVXJsIjoiaHR0cDovLzEwNi41Mi4xNzAuMTY6OTAwMC9hdmF0YXIvYXZhdGFyX1FR5Zu-54mHMjAxOTExMDgyMjQxNTEuanBnIiwic2V4Ijoi5aWzIiwicGhvbmUiOiIxMjM0NTY3ODkyMjM3Iiwic2FsdCI6IjQzNDQ2MDA2OTM4NzQ5ODAxNzciLCJyb2xlIjoi6LaF57qn566h55CG5ZGYIn0sImV4cCI6MTY0MzI4Nzc0MywiaXNzIjoic2RsIiwibmJmIjoxNjQzMjAxMzQzfQ.7HN11zDsJMv9DEsdp_7UoX89whxndAg6w-ie9pKqg6I'
+        // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYxZDgwODJjMDdmMjBjYzdmOTYyNmY4ZSIsImFjY291bnQiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDEwJEJHMk1xek8xSUhHLlNob2xFRVBub3VMSlg5NmtRaXhtMGtGRklVaWRWZEpNeU15Y1dtZDBxIiwibmFtZSI6ImFkbWluIiwiQXZhdGFyVXJsIjoiaHR0cDovLzEwNi41Mi4xNzAuMTY6OTAwMC9hdmF0YXIvYXZhdGFyX1FR5Zu-54mHMjAxOTExMDgyMjQxNTEuanBnIiwic2V4Ijoi5aWzIiwicGhvbmUiOiIxMjM0NSIsInNhbHQiOiI0MzQ0NjAwNjkzODc0OTgwMTc3Iiwicm9sZUlkIjoiNjFlMzczOWMxNDJkNmQ2ZGMwMWI3Yzg5Iiwib3BlbklkIjoiIn0sImV4cCI6MTY0NTY3NzczNiwiaXNzIjoic2RsIiwibmJmIjoxNjQ1NTkxMzM2fQ.GfkbiXS-gzI7eahGFq-fx6iinFFMfROs16CM4FoUCFo'
         if (token) {
             config.headers['token'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
         }

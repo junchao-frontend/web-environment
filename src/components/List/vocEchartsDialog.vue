@@ -60,7 +60,7 @@ export default {
       let xAxis = noVOC['无组织VOC'].time
       let xAxisData = []
       xAxis.forEach(item => {
-        xAxisData.push(item.substring(6))
+        xAxisData.push(item.substring(6).slice(0,2))
       })
       let noVOCData = noVOC['无组织VOC'].data
       let myChart = this.$echarts.init(this.$refs.chart, "chalk1"); //初始化实例
@@ -94,10 +94,10 @@ export default {
           },
           itemWidth: 15,
           itemHeight: 8,
-          itemStyle: {
-            color: '#fff',
-            borderColor: '#d5b00a'
-          },
+          // itemStyle: {
+          //   color: '#fff',
+          //   borderColor: '#d5b00a'
+          // },
         },
         xAxis: {
           type: "category",
@@ -146,12 +146,14 @@ export default {
             data: noVOCData,
             type: "line",
             // symbolSize: 7,
+            symbol: 'circle',
+            symbolSize: 6,
             lineStyle: {
               color: "#d5b00a",
             },
             itemStyle: {
               color: "#d5b00a",
-              borderColor: "#a3c8d8",
+              // borderColor: "#a3c8d8",
             },
             smooth: false,
             areaStyle: {

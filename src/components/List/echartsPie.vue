@@ -1,7 +1,7 @@
 <template>
   <div class="Pie">
     <div id="cols2">
-      数据采集
+      数据采集(近30天)
       <div class="title-line">
         <div class="line"></div>
         <div class="ball"></div>
@@ -63,6 +63,7 @@ export default {
               itemStyle: {
                 normal: {
                   color: colorArr[colorIndex],
+                  // fontSize: 200,
                 },
               },
             });
@@ -108,6 +109,7 @@ export default {
           left: "63%",
           top: "35%",
           // width: 10,
+          // padding: 10,
           itemGap: seriesData.length > 5 ? 15 : 20,
           itemWidth: 8,
           itemHeight: 8,
@@ -122,10 +124,10 @@ export default {
           },
           textStyle: {
             color: "rgba(255,255,255,.7)",
-            // padding: [2, 0, 0, 2],
+            // padding: [0, , 0, 0],
             rich: {
               a: {
-                width: 50,
+                width: 60,
                 align: "left",
                 fontSize: 10,
               },
@@ -233,7 +235,7 @@ export default {
 
 .line {
   border-top: 2px solid #2c567a;
-  width: 75px;
+  width: 126px;
   height: 0;
 }
 

@@ -24,9 +24,8 @@ export default {
   watch: {
     cemsDataItem: {
     handler(a) {
-      console.log(a);
+      // console.log(a);
       this.cemsData = a
-      // console.log(this.productionData.data, 'aaaa');
       this.initDialogs()
       // console.log(b, 'bbbbb');
       // this.fullName = newName + ' ' + this.lastName;
@@ -50,6 +49,12 @@ export default {
   },
   methods: {
     initDialogs() {
+      var xData = this.cemsData.time
+      var xAxisData = []
+      xData.forEach((item) => {
+        xAxisData.push(item.slice(0,8))
+      })
+      console.log(xAxisData);
       this.$echarts.init(this.$refs.chart).dispose()
       let myChart = this.$echarts.init(this.$refs.chart); //初始化实例
 
@@ -108,10 +113,10 @@ export default {
           type: "category",
           axisTick: { show: false },
           boundaryGap: false,
-          data: this.cemsData.time,
+          data: xAxisData,
           axisLabel: {
-            interval: 3,
-            rotate: -30,
+            interval: 2,
+            rotate: -20,
             fontStyle: {
               fontSize: 10
             }

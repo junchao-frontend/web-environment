@@ -37,22 +37,55 @@ export default {
       let xAxis = noVOC['无组织VOC'].time
       let xAxisData = []
       xAxis.forEach(item => {
-        xAxisData.push(item.substring(6))
+        // console.log(item.substring(6).slice(0,2));
+        xAxisData.push(item.substring(6).slice(0,2))
       })
       let noVOCData = noVOC['无组织VOC'].data
       let myChart = this.$echarts.init(this.$refs.line, "chalk1"); //初始化实例
       let option = {
+        // tooltip: {
+        //   trigger: "axis",
+        //   axisPointer: {
+        //     type: "cross",
+        //     label: {
+        //       backgroundColor: "#6a7985",
+        //     },
+        //   },
+        //   textStyle: {
+        //     fontSize: 12
+        //   }
+        // },
         tooltip: {
           trigger: "axis",
-          axisPointer: {
-            type: "cross",
-            label: {
-              backgroundColor: "#6a7985",
-            },
-          },
           textStyle: {
             fontSize: 12
-          }
+          },
+          axisPointer: {
+            lineStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "rgba(0, 255, 233,0)",
+                  },
+                  {
+                    offset: 0.5,
+                    color: "rgba(255, 255, 255,1)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(0, 255, 233,0)",
+                  },
+                ],
+                global: false,
+              },
+            },
+          },
         },
         grid: {
           top: "35%",
@@ -67,20 +100,22 @@ export default {
           top: "10%",
           data: ["有组织", "无组织"],
           textStyle: {
-            color: '#fff'
+            color: "#a6bde9",
+            fontSize: 10,
           },
           itemWidth: 15,
           itemHeight: 8,
-          itemStyle: {
-            color: '#fff',
-            borderColor: '#d5b00a'
-          },
+          // itemStyle: {
+          //   color: '#fff',
+          //   borderColor: '#d5b00a'
+          // },
         },
         xAxis: {
           type: "category",
           axisTick: { show: false },
           boundaryGap: false,
           data: xAxisData,
+          // splitNumber: 50,
           //设置轴线的属性
           axisLine: {
             lineStyle: {
@@ -88,9 +123,10 @@ export default {
             },
           },
           axisLabel: {
+            interval: 1,
+            show: true,
             textStyle: {
-              color: "#a6bde9",
-              fontSize: 10,
+              fontSize: 10, //更改坐标轴文字大小
             },
           },
         },
@@ -106,7 +142,7 @@ export default {
           axisLine: {
             show: true,
             lineStyle: {
-              color: "#a6bde9"
+              color: "#283352",
             },
           },
           axisLabel: {
@@ -119,15 +155,21 @@ export default {
         series: [
           {
             name: "无组织",
+            symbol: 'circle',
             data: noVOCData,
             type: "line",
-            // symbolSize: 7,
+            symbolSize: 5,
             lineStyle: {
-              color: "#d5b00a",
+              color: "#ffcd00",
             },
             itemStyle: {
               color: "#d5b00a",
-              borderColor: "#a3c8d8",
+              borderColor: "rgb(0,115,100)",
+              borderWidth: 0,
+              shadowColor: "rgba(0, 0, 0, 0)",
+              shadowBlur: 0,
+              shadowOffsetY: 0,
+              shadowOffsetX: 0,
             },
             smooth: false,
             areaStyle: {
