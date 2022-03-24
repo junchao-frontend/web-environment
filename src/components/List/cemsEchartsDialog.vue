@@ -49,6 +49,7 @@ export default {
   },
   methods: {
     initDialogs() {
+      console.log(1);
       var xData = this.cemsData.time
       var xAxisData = []
       xData.forEach((item) => {

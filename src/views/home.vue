@@ -25,11 +25,22 @@
     <div class="middle">
       <div id="photosphere" class="photosphere"></div>
       <div class="middle-echarts">
+        <div class="cems-tab">
+          <el-tabs
+            v-model="activeName"
+            @tab-click="handleClick"
+          >
+            <el-tab-pane label="焙烧CEMS" name="first"></el-tab-pane>
+            <el-tab-pane label="隧道窑CEMS" name="second"></el-tab-pane>
+          </el-tabs>
+        </div>
         <dv-border-box-12 class="border">
-          <EchartsLines
+          <roastingLines
+            v-if="isShowRoastCems"
             :dialogVisible="dialogVisible"
             @openDialog="openDialog"
           />
+          <tunnelLines v-else />
         </dv-border-box-12>
       </div>
     </div>
@@ -213,11 +224,7 @@
       </el-tabs>
       <cemsEchartsDialog :cemsDataItem="cemsDataItem"></cemsEchartsDialog>
     </el-dialog>
-    <el-dialog
-      title="无组织VOCs"
-      :visible.sync="VOCdialogVisible"
-      width="50%"
-    >
+    <el-dialog title="无组织VOCs" :visible.sync="VOCdialogVisible" width="50%">
       <vocEchartsDialog></vocEchartsDialog>
     </el-dialog>
   </div>
@@ -242,7 +249,8 @@ import Tips from "../components/List/Tips";
 import cemsEchartsDialog from "../components/List/cemsEchartsDialog";
 import vocEchartsDialog from "../components/List/vocEchartsDialog";
 import EchartsLine from "../components/List/echartsLine";
-import EchartsLines from "../components/List/echartsLines";
+import roastingLines from "../components/List/roastingLines";
+import tunnelLines from "../components/List/tunnelLines";
 import { MarkersPlugin } from "photo-sphere-viewer/dist/plugins/markers.js";
 export default {
   components: {
@@ -253,19 +261,22 @@ export default {
     // RightLine1,
     Tips,
     EchartsLine,
-    EchartsLines,
+    tunnelLines,
+    roastingLines,
     cemsEchartsDialog,
     vocEchartsDialog,
     WetElectricity1,
     WetElectricity2,
     WetElectricity3,
-    AirCar
+    AirCar,
   },
   data() {
     return {
       nowdata: null,
       isFullScreen: false,
       firstInit: "一氧化氮",
+      isShowRoastCems: true,
+      activeName: "first",
       cemsDataArr: [], // cems数据集合
       cemsDataItem: [], // cems单个折线数据
       cemsNames: [],
@@ -441,8 +452,8 @@ export default {
         console.log(e, "坐标");
       });
       this.PSV.on("fullscreen-updated", (e) => {
-        if(e.args[0] === true) {
-          this.$router.push('/photo')
+        if (e.args[0] === true) {
+          this.$router.push("/photo");
         }
         // console.log(e);
       });
@@ -452,8 +463,8 @@ export default {
           this.infoTitle = marker.config.tooltip.content;
           this.dialogVisible = true; // 弹出框
           this.$store.commit("set_dialog");
-        } else if (marker.id === 'html6') {
-          this.VOCdialogVisible = true
+        } else if (marker.id === "html6") {
+          this.VOCdialogVisible = true;
           this.$store.commit("set_dialog");
         }
         // console.log(marker);
@@ -650,7 +661,7 @@ export default {
         code: 202201152021,
       };
       const { data } = await getCemsData(params);
-      const cemsData = data.data.info;
+      const cemsData = data.data[0].info;
       this.cemsNames = Object.keys(cemsData);
       this.cemsDataArr = Object.values(cemsData);
       this.cemsDataItem = this.cemsDataArr[0];
@@ -794,6 +805,14 @@ export default {
         this.test();
       }, 5000);
       // console.log(this.dataName);
+    },
+    handleClick(tab) {
+      console.log(tab);
+      if(tab.name === 'second') {
+        this.isShowRoastCems = false
+      } else if(tab.name === 'first') {
+        this.isShowRoastCems = true
+      }
     },
   },
 };
@@ -1507,19 +1526,19 @@ CEMS css
 .full-icon {
   z-index: -1;
 }
-/deep/ .psv-panel{
+/deep/ .psv-panel {
   width: 260px;
   height: 100% !important;
 }
-/deep/ .psv-panel-resizer{
+/deep/ .psv-panel-resizer {
   display: none;
 }
-/deep/ .psv-panel-close-button{
+/deep/ .psv-panel-close-button {
   background-color: transparent;
   left: 0;
   z-index: 5000;
 }
-/deep/ .psv-panel-content{
+/deep/ .psv-panel-content {
   backdrop-filter: blur(5px);
   // border: solid 2px rgba(64, 97, 148, 0.6);
   // -webkit-box-shadow: 0 1px 3px rgba(0 0 0 / 30%);
@@ -1529,5 +1548,11 @@ CEMS css
   // width: 35% !important;
   // height: 45% !important;
   background-color: rgba(64, 97, 148, 0.534);
+}
+.cems-tab {
+  cursor: pointer;
+  position: relative;
+  top: 2%;
+  left: 42%;
 }
 </style>
