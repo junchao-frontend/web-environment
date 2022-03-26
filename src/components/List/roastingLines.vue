@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="cols2">
-      CEMS
+      {{title}}
       <i
           class="el-icon-full-screen"
           style="font-size: 8px; cursor: pointer; color: white"
@@ -85,6 +85,13 @@ export default {
       getCemsData(params).then((res) => {
         console.log(res, '-----');
         this.linesData = res.data.data[0].info;
+        for(let key in this.linesData) {
+          const test = key.indexOf('PJZS') != -1
+          if(test) {
+            delete this.linesData[key]
+          }
+        }
+        this.title = res.data.data[0].name
         let names = Object.keys(this.linesData);
         this.echartsName = names;
         let dataArr = Object.values(this.linesData);
@@ -1569,7 +1576,7 @@ export default {
 }
 .Line {
   border-top: 2px solid #2c567a;
-  width: 70px;
+  width: 100px;
   height: 0;
 }
 .ball {

@@ -58,7 +58,6 @@ export default {
       //数据接收
       // console.log(e);
       const redata = JSON.parse(e.data);
-      // console.log(redata);
       this.roasting = redata.runTimeAndVA.source2;
       this.dataProcessing();
     },
@@ -78,6 +77,8 @@ export default {
         voltage = [],
         eleCurrent = [],
         runningTime = [];
+      // console.log(this.roasting, 'this.roasting');
+      if(this.roasting === null) return
       this.roasting.forEach((item) => {
         xData.push(item[0].slice(5, 13));
         voltage.push(item[1]);

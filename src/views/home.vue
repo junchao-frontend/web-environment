@@ -26,10 +26,7 @@
       <div id="photosphere" class="photosphere"></div>
       <div class="middle-echarts">
         <div class="cems-tab">
-          <el-tabs
-            v-model="activeName"
-            @tab-click="handleClick"
-          >
+          <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="焙烧CEMS" name="first"></el-tab-pane>
             <el-tab-pane label="隧道窑CEMS" name="second"></el-tab-pane>
           </el-tabs>
@@ -40,7 +37,11 @@
             :dialogVisible="dialogVisible"
             @openDialog="openDialog"
           />
-          <tunnelLines v-else />
+          <tunnelLines
+            v-else
+            :dialogVisible="dialogVisible"
+            @openDialog="openDialog"
+          />
         </dv-border-box-12>
       </div>
     </div>
@@ -190,7 +191,7 @@
     </div>
     <el-dialog
       @open="changeDialogItem('1')"
-      :title="infoTitle"
+      :title="currentCems"
       :visible.sync="dialogVisible"
       width="50%"
     >
@@ -231,7 +232,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import "photo-sphere-viewer/dist/plugins/markers.css";
 import { getCemsData } from "@/api/line.js";
 import { Viewer } from "photo-sphere-viewer";
@@ -303,6 +304,7 @@ export default {
   },
   computed: {
     ...mapState(["dataName", "realTimeData", "dialog"]),
+    ...mapGetters(["currentCems"]),
   },
   created() {
     // document.onkeydown = () => {
@@ -614,6 +616,7 @@ export default {
     openDialog(params) {
       this.dialogVisible = params;
       this.$store.commit("set_dialog");
+      this.initDialog()
     },
     fullScreen() {
       var docElm = document.documentElement;
@@ -661,10 +664,19 @@ export default {
         code: 202201152021,
       };
       const { data } = await getCemsData(params);
-      const cemsData = data.data[0].info;
-      this.cemsNames = Object.keys(cemsData);
-      this.cemsDataArr = Object.values(cemsData);
-      this.cemsDataItem = this.cemsDataArr[0];
+      let currentCems = this.currentCems;
+      if (currentCems === "焙烧CEMS") {
+        const cemsData = data.data[0].info;
+        this.cemsNames = Object.keys(cemsData);
+        this.cemsDataArr = Object.values(cemsData);
+        this.cemsDataItem = this.cemsDataArr[0];
+      } else if (currentCems === "隧道窑CEMS") {
+        const cemsData = data.data[1].info;
+        this.cemsNames = Object.keys(cemsData);
+        this.cemsDataArr = Object.values(cemsData);
+        this.cemsDataItem = this.cemsDataArr[0];
+      }
+
       // console.log(this.cemsDataArr);
     },
     changeCemsLine(tab) {
@@ -807,11 +819,13 @@ export default {
       // console.log(this.dataName);
     },
     handleClick(tab) {
-      console.log(tab);
-      if(tab.name === 'second') {
-        this.isShowRoastCems = false
-      } else if(tab.name === 'first') {
-        this.isShowRoastCems = true
+      // console.log(tab);
+      if (tab.name === "second") {
+        this.isShowRoastCems = false;
+        this.$store.commit("change_cems", "隧道窑CEMS");
+      } else if (tab.name === "first") {
+        this.isShowRoastCems = true;
+        this.$store.commit("change_cems", "焙烧CEMS");
       }
     },
   },
