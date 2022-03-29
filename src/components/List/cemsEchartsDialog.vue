@@ -49,13 +49,13 @@ export default {
   },
   methods: {
     initDialogs() {
-      console.log(1);
+      // console.log(1);
       var xData = this.cemsData.time
       var xAxisData = []
       xData.forEach((item) => {
         xAxisData.push(item.slice(0,8))
       })
-      console.log(xAxisData);
+      // console.log(xAxisData);
       this.$echarts.init(this.$refs.chart).dispose()
       let myChart = this.$echarts.init(this.$refs.chart); //初始化实例
 

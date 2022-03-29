@@ -56,7 +56,7 @@ export default {
       //数据接收
       // console.log(e);
       const redata = JSON.parse(e.data);
-      console.log(redata);
+      // console.log(redata);
       this.airCarData = redata.airCarData.source;
       this.dataProcessing();
     },

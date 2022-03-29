@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     echartsClick(params) {
-      console.log(params);
+      // console.log(params);
       this.echartsIndex = params.dataIndex; // 将基准线的位置赋值给 echartsIndex
     },
     initBar() {
@@ -109,7 +109,7 @@ export default {
             myChart.off('click')
             // 添加柱状图点击事件
             myChart.on('click',function(params){
-                console.log(params)
+                // console.log(params)
                //点击的柱子的名称
                checkName = params.name;
                //柱形图重构

@@ -631,7 +631,7 @@ export default {
       // Chrome等
       else if (docElm.webkitRequestFullScreen) {
         docElm.webkitRequestFullScreen();
-        console.log(11111);
+        // console.log(11111);
       }
       // IE11
       // eslint-disable-next-line no-undef
@@ -668,11 +668,21 @@ export default {
       if (currentCems === "焙烧CEMS") {
         const cemsData = data.data[0].info;
         this.cemsNames = Object.keys(cemsData);
+        this.cemsNames.forEach((item,index) => {
+          if( !(item.indexOf('PJZS') == -1)){
+            this.cemsNames.splice(index,1)
+          }
+        })
         this.cemsDataArr = Object.values(cemsData);
         this.cemsDataItem = this.cemsDataArr[0];
       } else if (currentCems === "隧道窑CEMS") {
         const cemsData = data.data[1].info;
         this.cemsNames = Object.keys(cemsData);
+        this.cemsNames.forEach((item,index) => {
+          if( !(item.indexOf('PJZS') == -1)){
+            this.cemsNames.splice(index,1)
+          }
+        })
         this.cemsDataArr = Object.values(cemsData);
         this.cemsDataItem = this.cemsDataArr[0];
       }

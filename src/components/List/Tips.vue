@@ -13,7 +13,7 @@
         </div>
         <div style="height: 50%; width: 50%;margin-top:-15px; align-items: center">
           <div style="color: #a6bde9;  font-size: 12px;margin-top:18px">
-            监控探头
+            监控
           </div>
           <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             5
@@ -46,7 +46,7 @@
             CEMs
           </div>
           <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
-            3
+            2
           </div>
         </div>
       </div>
@@ -58,10 +58,10 @@
         </div>
         <div style="height: 50%; width: 50%;margin-top:-15px">
           <div style="color: #a6bde9; font-size: 12px;margin-top:18px">
-            工艺流程
+            湿电
           </div>
           <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
-            5
+            3
           </div>
         </div>
       </div>
@@ -73,10 +73,10 @@
         </div>
         <div style="height: 50%; width: 50%;margin-top:-15px">
           <div style="color: #a6bde9;font-size: 12px;margin-top:18px">
-            脱硫脱硝
+            脱硝
           </div>
           <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
-            1
+            2
           </div>
         </div>
       </div>
@@ -88,7 +88,7 @@
         </div>
         <div class="test" style="height: 50%; width: 50%;margin-top:-15px">
           <div style="color: #a6bde9;  font-size: 12px;margin-top:18px">
-            除尘设施
+            除尘
           </div>
           <div style="color: #fff; padding-bottom: 18px; font-size: 14px;margin-top:11px">
             5

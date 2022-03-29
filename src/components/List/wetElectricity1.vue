@@ -58,7 +58,7 @@ export default {
       //数据接收
       // console.log(e);
       const redata = JSON.parse(e.data);
-      console.log(redata);
+      // console.log(redata);
       this.tunnelData = redata.runTimeAndVA.source1;
       this.dataProcessing();
     },
