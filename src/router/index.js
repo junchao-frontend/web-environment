@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 Vue.use(VueRouter)
 const routes = [
     {
@@ -31,8 +31,8 @@ const router=new VueRouter({
         // to 是 访问界面
         // from 是来自哪
         // next是放行方法
-        const token = Cookies.get('token')
-        // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYxZDgwODJjMDdmMjBjYzdmOTYyNmY4ZSIsImFjY291bnQiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDEwJHdlc3R2alQzb0t0SzNGOUFlaXU2bk9MLkk0VTJVSVZvRU54eWhta1VWc0lDQWdlbnU5eDNTIiwibmFtZSI6ImFkbWluIiwiQXZhdGFyVXJsIjoiaHR0cDovLzEwNi41Mi4xNzAuMTY6OTAwMC9hdmF0YXIvYXZhdGFyX1FR5Zu-54mHMjAxOTExMDgyMjQxNTEuanBnIiwic2V4Ijoi55S3IiwicGhvbmUiOiIxMjM0NTYiLCJzYWx0IjoiNDczMjgxMzQ1ODA4MDcxNTk0MCIsInJvbGVJZCI6IjYxZTM3MzljMTQyZDZkNmRjMDFiN2M4OSIsIm9wZW5JZCI6IiJ9LCJpc3MiOiJzZGwiLCJuYmYiOjE2NDc5OTgwMjl9.GffJCxuSJtiue0BW0rOrdSNKvtVrmVrBCR8og-16UTk'
+        // const token = Cookies.get('token')
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYxZDgwODJjMDdmMjBjYzdmOTYyNmY4ZSIsImFjY291bnQiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDEwJHdlc3R2alQzb0t0SzNGOUFlaXU2bk9MLkk0VTJVSVZvRU54eWhta1VWc0lDQWdlbnU5eDNTIiwibmFtZSI6ImFkbWluIiwiQXZhdGFyVXJsIjoiaHR0cDovLzEwNi41Mi4xNzAuMTY6OTAwMC9hdmF0YXIvYXZhdGFyX1FR5Zu-54mHMjAxOTExMDgyMjQxNTEuanBnIiwic2V4Ijoi55S3IiwicGhvbmUiOiIxMjM0NTYiLCJzYWx0IjoiNDczMjgxMzQ1ODA4MDcxNTk0MCIsInJvbGVJZCI6IjYxZTM3MzljMTQyZDZkNmRjMDFiN2M4OSIsIm9wZW5JZCI6IiJ9LCJpc3MiOiJzZGwiLCJuYmYiOjE2NDg2MDMwODF9.KH34joNDrDvL_VM7968aUPgKqisKkN0Re_2fRXP8ADY'
         // console.log(token);
         // eslint-disable-next-line no-undef
         if (token) {

@@ -48,115 +48,31 @@
     <div class="right">
       <div class="right-item">
         <dv-border-box-13 class="right-border">
-          <WetElectricity1 style="transform: rotateY(180deg)" />
+          <AirCar style="transform: rotateY(180deg)" />
         </dv-border-box-13>
       </div>
-      <div class="right-item1">
+      <!-- <div class="right-item1">
         <dv-border-box-12 class="border">
           <WetElectricity2 />
         </dv-border-box-12>
-      </div>
+      </div> -->
       <div class="right-item2">
         <dv-border-box-12 class="border">
-          <WetElectricity3 />
+          <RightLine2 />
         </dv-border-box-12>
       </div>
       <div class="right-item3">
         <dv-border-box-12 class="border">
-          <!-- <div class="label-box">
-            <div
-              :class="[isSelected1 ? 'selectStyle-box' : '']"
-              class="label-box-item1"
-              @click="openItem('1')"
-            >
-              <div
-                :class="[isSelected1 ? 'selectStyle-text' : '']"
-                class="text"
-              >
-                3012
-              </div>
-              <div
-                :class="[isSelected1 ? 'selectStyle-title' : '']"
-                class="text-title"
-              >
-                一次焙烧
-              </div>
-            </div>
-            <div
-              class="label-box-item2"
-              :class="[isSelected2 ? 'selectStyle-box' : '']"
-              @click="openItem('2')"
-            >
-              <div
-                :class="[isSelected2 ? 'selectStyle-text' : '']"
-                class="text"
-              >
-                2314
-              </div>
-              <div
-                :class="[isSelected2 ? 'selectStyle-title' : '']"
-                class="text-title"
-              >
-                浸渍
-              </div>
-            </div>
-            <div
-              class="label-box-item3"
-              :class="[isSelected3 ? 'selectStyle-box' : '']"
-              @click="openItem('3')"
-            >
-              <div
-                :class="[isSelected3 ? 'selectStyle-text' : '']"
-                class="text"
-              >
-                2825
-              </div>
-              <div
-                :class="[isSelected3 ? 'selectStyle-title' : '']"
-                class="text-title"
-              >
-                隧道窑
-              </div>
-            </div>
-            <div
-              class="label-box-item4"
-              :class="[isSelected4 ? 'selectStyle-box' : '']"
-              @click="openItem('4')"
-            >
-              <div
-                :class="[isSelected4 ? 'selectStyle-text' : '']"
-                class="text"
-              >
-                1688
-              </div>
-              <div
-                :class="[isSelected4 ? 'selectStyle-title' : '']"
-                class="text-title"
-              >
-                石墨化
-              </div>
-            </div>
-            <div
-              class="label-box-item5"
-              :class="[isSelected5 ? 'selectStyle-box' : '']"
-              @click="openItem('5')"
-            >
-              <div
-                :class="[isSelected5 ? 'selectStyle-text' : '']"
-                class="text"
-              >
-                3450
-              </div>
-              <div
-                :class="[isSelected5 ? 'selectStyle-title' : '']"
-                class="text-title"
-              >
-                压型
-              </div>
-            </div>
-          </div> -->
+          <div class="shidian-tab">
+          <el-tabs v-model="weActiveName" @tab-click="weHandleClick">
+            <el-tab-pane label="隧道窑湿电" name="one"></el-tab-pane>
+            <el-tab-pane label="石墨化湿电" name="two"></el-tab-pane>
+            <el-tab-pane label="焙烧湿电" name="three"></el-tab-pane>
+          </el-tabs>
+        </div>
+        <WetElectricity :index="weActiveName" />
           <!-- <EchartsBar :echartsData="echartsData" /> -->
-          <AirCar />
+          <!-- <AirCar /> -->
         </dv-border-box-12>
       </div>
     </div>
@@ -237,10 +153,7 @@ import "photo-sphere-viewer/dist/plugins/markers.css";
 import { getCemsData } from "@/api/line.js";
 import { Viewer } from "photo-sphere-viewer";
 import "photo-sphere-viewer/dist/photo-sphere-viewer.css";
-// import RightLine2 from "../components/List/rightLine2";
-import WetElectricity1 from "../components/List/wetElectricity1.vue";
-import WetElectricity2 from "../components/List/wetElectricity2.vue";
-import WetElectricity3 from "../components/List/wetElectricity3.vue";
+import RightLine2 from "../components/List/rightLine2";
 import AirCar from "../components/List/airCar.vue";
 import EchartsPie from "../components/List/echartsPie";
 // import EchartsBar from "../components/List/echartsBar";
@@ -252,10 +165,11 @@ import vocEchartsDialog from "../components/List/vocEchartsDialog";
 import EchartsLine from "../components/List/echartsLine";
 import roastingLines from "../components/List/roastingLines";
 import tunnelLines from "../components/List/tunnelLines";
+import WetElectricity from '@/components/newComponents/wetElectricity.vue'
 import { MarkersPlugin } from "photo-sphere-viewer/dist/plugins/markers.js";
 export default {
   components: {
-    // RightLine2,
+    RightLine2,
     EchartsPie,
     // EchartsBar,
     EchartsForm,
@@ -266,9 +180,7 @@ export default {
     roastingLines,
     cemsEchartsDialog,
     vocEchartsDialog,
-    WetElectricity1,
-    WetElectricity2,
-    WetElectricity3,
+    WetElectricity,
     AirCar,
   },
   data() {
@@ -278,6 +190,7 @@ export default {
       firstInit: "一氧化氮",
       isShowRoastCems: true,
       activeName: "first",
+      weActiveName: "one", // 湿电标签
       cemsDataArr: [], // cems数据集合
       cemsDataItem: [], // cems单个折线数据
       cemsNames: [],
@@ -428,7 +341,7 @@ export default {
                   latitude: -0.30994143771483906,
                   html: `<div class="info-warp-cems" id="warp">
                             <div class="info-warp-cems-title">
-                            <span class="title-span" id="title-span">煅烧CEMS</span>
+                            <span class="title-span" id="title-span">焙烧CEMS</span>
                             </div>
                             <div class="info-warp-cems-body" id="body">
                               <span class="left-span">二氧化硫:</span><span class="right-span">0.021300</span>
@@ -837,6 +750,10 @@ export default {
         this.isShowRoastCems = true;
         this.$store.commit("change_cems", "焙烧CEMS");
       }
+    },
+    // eslint-disable-next-line no-unused-vars
+    weHandleClick(tab) {
+      // console.log(tab.name);
     },
   },
 };
@@ -1578,5 +1495,12 @@ CEMS css
   position: relative;
   top: 2%;
   left: 42%;
+}
+.shidian-tab {
+  cursor: pointer;
+  position: relative;
+  top: 10%;
+  left: 28%;
+  // transform: translate(0,-50%);
 }
 </style>

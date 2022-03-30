@@ -1,25 +1,28 @@
 <template>
-  <div class="Car">
+  <div class="wetElectricity">
     <div id="cols2">
-      吸料天车
+      湿电
       <div class="title-line">
         <div class="line"></div>
         <div class="ball"></div>
       </div>
     </div>
-    <div id="Car"></div>
+    <div id="wetElectricity"></div>
   </div>
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import echarts from "echarts";
 export default {
+  props: ["index"],
   data() {
     return {
       websock: null,
-      airCarData: [], // 隧道窑湿电数据
-      runningTimeWest: [], // 西跨运行时间
-      runningTimeEast: [], // 西跨运行时间
+      tunnelData: [], // 隧道窑湿电数据
+      graphiteData: [], // 电压
+      roastingData: [], // 电流
+      runningTime: [], // 运行时间
       xData: [],
     };
   },
@@ -30,6 +33,16 @@ export default {
     this.websock.close(); //离开路由之后断开websocket连接
   },
   mounted() {},
+  watch: {
+    index: {
+      // eslint-disable-next-line no-unused-vars
+      handler(val) {
+        // console.log(val, "val");
+        this.dataProcessing()
+      },
+    //   immediate: true,
+    },
+  },
   methods: {
     initWebSocket() {
       //初始化weosocket
@@ -57,8 +70,10 @@ export default {
       //数据接收
       // console.log(e);
       const redata = JSON.parse(e.data);
-      this.westData = redata.airCarData.source;
-      this.eastData = redata.airCarData.source2;
+      // console.log(redata);
+      this.tunnelData = redata.runTimeAndVA.source1; // 隧道窑湿电
+      this.graphiteData = redata.runTimeAndVA.source3; // 石墨化湿电
+      this.roastingData = redata.runTimeAndVA.source2; // 焙烧湿电
       this.dataProcessing();
     },
     websocketsend(Data) {
@@ -72,30 +87,62 @@ export default {
     },
     // 数据处理函数
     dataProcessing() {
-      // console.log(this.tunnelData);
-      let xData = [],
-        runningTimeWest = [],
-        runningTimeEast = []
-      this.westData.forEach((item) => {
-        xData.push(item[0].slice(5, 13));
-        runningTimeWest.push(item[1].slice(0, 2));
-      });
-      this.eastData.forEach((item) => {
-        runningTimeEast.push(item[1].slice(0, 2));
-      });
-      this.xData = xData.splice(1);
-      this.runningTimeWest = runningTimeWest.splice(1);
-      this.runningTimeEast = runningTimeEast.splice(1);
-      // console.log(this.runningTime);
-      this.initRadar();
+      let currentIndex = this.index;
+      if (currentIndex === "one") {
+        let xData = [],
+          power = [],
+          runningTime = [];
+        this.tunnelData.splice(0, 1);
+        this.tunnelData.forEach((item) => {
+          xData.push(item[0].slice(5, 13));
+          power.push(Math.floor(item[1] * item[2]));
+          runningTime.push(item[3].slice(0, 2));
+        });
+        this.xData = xData.splice(1);
+        this.power = power;
+        this.runningTime = runningTime.splice(1);
+        this.initRadar();
+      } else if(currentIndex === 'two') {
+          let xData = [],
+          power = [],
+          runningTime = [];
+        this.graphiteData.splice(0, 1);
+        this.graphiteData.forEach((item) => {
+          xData.push(item[0].slice(5, 13));
+          power.push(Math.floor(item[1] * item[2]));
+          runningTime.push(item[3].slice(0, 2));
+        });
+        this.xData = xData.splice(1);
+        this.power = power;
+        this.runningTime = runningTime.splice(1);
+        this.initRadar();
+      }else if(currentIndex === 'three') {
+          let xData = [],
+          power = [],
+          runningTime = [];
+          if(this.roastingData === null) return
+        this.roastingData.splice(0, 1);
+        this.roastingData.forEach((item) => {
+          xData.push(item[0].slice(5, 13));
+          power.push(Math.floor(item[1] * item[2]));
+          runningTime.push(item[3].slice(0, 2));
+        });
+        this.xData = xData.splice(1);
+        this.power = power;
+        this.runningTime = runningTime.splice(1);
+        this.initRadar();
+      }
     },
     initRadar() {
-      let myChart = this.$echarts.init(document.getElementById("Car")); //初始化实例
+      let myChart = this.$echarts.init(
+        document.getElementById("wetElectricity")
+      ); //初始化实例
       let option = {
+        // backgroundColor: "#0f375f",
         tooltip: {
           trigger: "axis",
           textStyle: {
-            fontSize: 12
+            fontSize: 12,
           },
           axisPointer: {
             lineStyle: {
@@ -125,8 +172,8 @@ export default {
           },
         },
         legend: {
-          data: ["西跨吸料天车", "东跨吸料天车"],
-          top: "15%",
+          data: ["运行时间", "功率"],
+          top: "22%",
           itemWidth: 15,
           itemHeight: 8,
           textStyle: {
@@ -135,8 +182,8 @@ export default {
           },
         },
         grid: {
-          top: "25%",
-          left: "5%",
+          top: "35%",
+          left: "7%",
           right: "5%",
           bottom: "5%",
           containLabel: true,
@@ -144,89 +191,92 @@ export default {
         xAxis: {
           type: "category",
           axisTick: { show: false },
-          boundaryGap: false,
           data: this.xData,
-          //设置轴线的属性
           axisLine: {
             lineStyle: {
-              color: "#a6bde9",
+              color: "rgba(255,255,255,.1)",
             },
           },
           axisLabel: {
             show: true,
             textStyle: {
-              fontSize: 10, //更改坐标轴文字大小
+              color: "#a6bde9",
+              fontSize: 8, //更改坐标轴文字大小
             },
           },
         },
-        yAxis: {
+        yAxis: [
+          {
             max: "dataMax",
             min: "dataMin",
-          boundaryGap: false,
-          type: "value",
-          axisLabel: {
-            textStyle: {
-              color: "#a6bde9",
-              fontSize: 9,
+            position: "left",
+            axisTick: { show: false },
+            splitNumber: 1, // y轴分割段数
+            type: "value",
+            // offset: 22,
+            axisLabel: {
+              margin: 4,
+              textStyle: {
+                color: "#a6bde9",
+                fontSize: 8,
+              },
+            },
+            splitLine: { show: false },
+            nameTextStyle: {
+              color: "#fff",
+              fontSize: 12,
+              lineHeight: 40,
+            },
+            axisLine: {
+              lineStyle: {
+                color: "rgba(255,255,255,.1)",
+              },
             },
           },
-          nameTextStyle: {
-            color: "#fff",
-            fontSize: 12,
-            lineHeight: 40,
-          },
-          splitLine: {
-            show: false,
-            lineStyle: {
-              color: "#283352",
-              type: 'dashed'
+          {
+            // max: "dataMax",
+            // min: "dataMin",
+            position: "right",
+            splitNumber: 1,
+            axisTick: { show: false },
+            type: "value",
+            axisLabel: {
+              margin: 4,
+              textStyle: {
+                color: "#a6bde9",
+                fontSize: 8,
+              },
+            },
+            nameTextStyle: {
+              color: "#fff",
+              fontSize: 12,
+              lineHeight: 40,
+            },
+            splitLine: { show: false },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "rgba(255,255,255,.1)",
+              },
             },
           },
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: "#283352",
-            },
-          },
-          axisTick: {
-            show: false,
-          },
-        },
+        ],
         series: [
           {
-            name: '西跨吸料天车',
+            name: "运行时间",
             type: "line",
-            smooth: true, //是否平滑
             showSymbol: false,
+            yAxisIndex: 0,
+            smooth: true, //是否平滑
             // symbol: 'image://./static/images/guang-circle.png',
             symbol: "circle",
+            // symbolSize: 5,
             lineStyle: {
               normal: {
                 width: 2,
                 color: "#19a3df",
               },
             },
-            areaStyle: {
-              normal: {
-                color: new echarts.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1,
-                  [
-                    {
-                      offset: 0,
-                      color: "rgba(88,255,255,0.2)",
-                    },
-                    {
-                      offset: 0.8,
-                      color: "rgba(88,255,255,0)",
-                    },
-                  ],
-                  false
-                ),
-              },
-            },
             label: {
               show: false,
               position: "top",
@@ -236,7 +286,7 @@ export default {
               },
             },
             itemStyle: {
-              color: "#00DAFF",
+              color: "#19a3df",
               borderColor: "rgb(0,115,100)",
               borderWidth: 0,
               shadowColor: "rgba(0, 0, 0, 0)",
@@ -247,63 +297,33 @@ export default {
             tooltip: {
               show: true,
             },
-            data: this.runningTimeWest,
+            data: this.runningTime,
           },
           {
-            name: '东跨吸料天车',
             type: "line",
-            smooth: true, //是否平滑
+            // symbolSize: 7,
             showSymbol: false,
-            // symbol: 'image://./static/images/guang-circle.png',
             symbol: "circle",
-            lineStyle: {
-              normal: {
-                width: 2,
-                color: "#585eaa",
-              },
-            },
-            areaStyle: {
-              normal: {
-                color: new echarts.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1,
-                  [
-                    {
-                      offset: 0,
-                      color: "rgba(88,255,255,0.2)",
-                    },
-                    {
-                      offset: 0.8,
-                      color: "rgba(88,255,255,0)",
-                    },
-                  ],
-                  false
-                ),
-              },
-            },
-            label: {
-              show: false,
-              position: "top",
-              textStyle: {
-                color: "#fff",
-                fontSize: 14,
-              },
-            },
+            symbolSize: 6,
+            zlevel: 3,
+            smooth: true,
+            // 电流y轴
+            name: "功率",
+            barGap: "-100%",
+            yAxisIndex: 1,
+            barWidth: 6,
             itemStyle: {
-              color: "#585eaa",
-              borderColor: "rgb(0,115,100)",
-              borderWidth: 0,
-              shadowColor: "rgba(0, 0, 0, 0)",
-              shadowBlur: 0,
-              shadowOffsetY: 0,
-              shadowOffsetX: 0,
+              normal: {
+                barBorderRadius: [5, 5, 0, 0],
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: "rgba(0,207,255,0.7)" },
+                  { offset: 0.2, color: "rgba(0,207,255,0.5)" },
+                  { offset: 1, color: "rgba(0,207,255,0)" },
+                ]),
+              },
             },
-            tooltip: {
-              show: true,
-            },
-            data: this.runningTimeEast,
+            z: -12,
+            data: this.power,
           },
         ],
       };
@@ -317,7 +337,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#Car {
+#wetElectricity {
   height: 100%;
   width: 100%;
   /* background-color: rgba(1, 131, 196, 0.05); */
@@ -347,7 +367,7 @@ export default {
 
 .line {
   border-top: 2px solid #2c567a;
-  width: 75px;
+  width: 60px;
   height: 0;
 }
 
@@ -357,7 +377,7 @@ export default {
   border-radius: 50%;
   background-color: #06c8eb;
 }
-.Car {
+.wetElectricity {
   height: 100%;
   width: 100%;
   /* backdrop-filter: blur(8px);

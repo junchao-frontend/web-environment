@@ -29,21 +29,25 @@ export default {
       const { data } = await getCollectionData(params);
       var echartsData = data.data;
       // eslint-disable-next-line no-unused-vars
-      var totalValue = 0
+      var totalValue = 0;
       echartsData.forEach((item, index) => {
         item.id = index;
         totalValue += item.num;
       });
       // console.log(totalValue);
       echartsData.unshift({
-        id: 'total',
-        num: totalValue
-      })
+        id: "total",
+        num: totalValue,
+      });
       // console.log(echartsData);
       this.chartData = echartsData;
+      function sortData(a, b) {
+        return a.num - b.num;
+      }
+      this.chartData.sort(sortData)
       let myChart = this.$echarts.init(document.getElementById("Pie")); //初始化实例
       let total;
-      let colorArr = ["#19a3df", "#3cab8f", "#db6c72"];
+      let colorArr = ["#19a3df", "#3cab8f", "#db6c72", "#585eaa"];
       let seriesData = [];
       let nameArr = [];
       // console.log(this.chartData);
@@ -53,8 +57,8 @@ export default {
         if (item.id === "total") {
           total = value;
         }
-        let colorIndex = [0, 1, 2].indexOf(item.id);
-        if ([0, 1, 2].includes(item.id)) {
+        let colorIndex = [1, 2, 3, 4].indexOf(item.id);
+        if ([1, 2, 3, 4].includes(item.id)) {
           nameArr.push(item.name);
           if (value) {
             seriesData.push({
@@ -81,7 +85,7 @@ export default {
               a: {
                 // width: 100,
                 align: "center",
-                fontSize: 20,
+                fontSize: 16,
                 color: "#fff",
                 fontWight: 300,
                 border: "1px solid red",
@@ -107,7 +111,7 @@ export default {
           orient: "vertical",
           icon: "circle",
           left: "63%",
-          top: "35%",
+          top: "28%",
           // width: 10,
           // padding: 10,
           itemGap: seriesData.length > 5 ? 15 : 20,

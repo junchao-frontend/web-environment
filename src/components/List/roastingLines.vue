@@ -67,7 +67,8 @@ export default {
       linesData: "",
       echartsData: "", // 真实数据数组
       echartsName: "",
-      echarts6Datamin: ''
+      echarts6Datamin: '',
+      title: ''
     };
   },
   computed: {},
@@ -83,7 +84,6 @@ export default {
         code: 202201152021,
       };
       getCemsData(params).then((res) => {
-        console.log(res, '-----');
         this.linesData = res.data.data[0].info;
         for(let key in this.linesData) {
           const test = key.indexOf('PJZS') != -1
